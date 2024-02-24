@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="98" height="98" viewBox="0 0 98 98">
+  <g id="check" transform="translate(-152.431 -582.931)">
+    <path id="check-mark_1_" data-name="check-mark (1)" d="M98,49A49,49,0,1,1,49,0,48.973,48.973,0,0,1,98,49Zm-7.656,0A41.344,41.344,0,1,0,49,90.344,41.321,41.321,0,0,0,90.344,49Zm0,0" transform="translate(152.431 582.931)" fill="#3db9b4"/>
+    <path id="check-mark_1_2" data-name="check-mark (1)" d="M60.427,23.194a3.659,3.659,0,0,1,0,5.176L35.875,52.923a3.661,3.661,0,0,1-5.176,0L19.011,41.234a3.659,3.659,0,0,1,5.175-5.175l9.1,9.1L55.251,23.194a3.661,3.661,0,0,1,5.176,0Z" transform="translate(161.711 593.873)" fill="#3db9b4"/>
+  </g>
+</svg>

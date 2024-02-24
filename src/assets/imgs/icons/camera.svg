@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 28 28">
+  <g id="camera" transform="translate(0.229 0.363)">
+    <circle id="Ellipse_1615" data-name="Ellipse 1615" cx="14" cy="14" r="14" transform="translate(-0.229 -0.363)" fill="#f6f6f6"/>
+    <g id="photo-camera-interface-symbol-for-button" transform="translate(8.358 9.238)">
+      <path id="Path_16133" data-name="Path 16133" d="M7.514,8.753A1.832,1.832,0,1,1,5.682,6.92,1.835,1.835,0,0,1,7.514,8.753Zm3.849-2.6v5.205a1.257,1.257,0,0,1-1.257,1.257H1.257A1.257,1.257,0,0,1,0,11.356V6.151A1.257,1.257,0,0,1,1.257,4.894H2.8V4.459a1.1,1.1,0,0,1,1.1-1.1h3.56a1.1,1.1,0,0,1,1.1,1.1v.434h1.546A1.257,1.257,0,0,1,11.363,6.151Zm-2.907,2.6a2.775,2.775,0,1,0-2.775,2.775A2.778,2.778,0,0,0,8.457,8.753Z" transform="translate(0 -3.36)" fill="#bfbfbf"/>
+    </g>
+  </g>
+</svg>

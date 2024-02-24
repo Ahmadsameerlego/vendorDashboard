@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="200" height="70" viewBox="0 0 200 70">
+  <g id="Group_4460" data-name="Group 4460" transform="translate(2731 20582)">
+    <g id="Rectangle_1905" data-name="Rectangle 1905" transform="translate(-2731 -20582)" fill="#fff" stroke="#3baeaa" stroke-width="1">
+      <rect width="200" height="70" rx="12" stroke="none"/>
+      <rect x="0.5" y="0.5" width="199" height="69" rx="11.5" fill="none"/>
+    </g>
+    <text id="حمل_الآن" data-name="حمل الآن" transform="translate(-2656 -20555)" fill="#6b6b6b" font-size="14" font-family="URWDINArabic-Medium, URW DIN Arabic" font-weight="500"><tspan x="0" y="0">حمل الآن</tspan></text>
+    <text id="App_Store" data-name="App Store" transform="translate(-2679 -20529)" fill="#202020" font-size="18" font-family="URWDINArabic-Bold, URW DIN Arabic" font-weight="700"><tspan x="0" y="0">App Store</tspan></text>
+    <g id="noun_Apple_1426920" transform="translate(-2599.334 -20572)">
+      <g id="Group_40679" data-name="Group 40679" transform="translate(15 8)">
+        <path id="Path_33540" data-name="Path 33540" d="M22.412,960.362c3.784,1.278,6.732,2.556,6.312,8.1C24.94,967.605,21.571,965.475,22.412,960.362Zm12.016,7.691a9.312,9.312,0,0,1,8.9,9.31c0,8.5-5.667,17-8.9,17-2.429,0-4.452-1.619-6.071-1.619s-3.238,1.619-5.667,1.619c-3.238,0-6.881-4.857-7.691-9.31,2.833-2.024,4.857-3.238,4.857-6.881,0-2.429-2.024-4.857-4.452-6.881a8.258,8.258,0,0,1,6.071-3.238c2.429,0,5.04,1.921,6.881,2.024C29.976,970.076,32,968.053,34.429,968.053Z" transform="translate(-15 -960.362)" fill="#3baeaa"/>
+      </g>
+    </g>
+  </g>
+</svg>
