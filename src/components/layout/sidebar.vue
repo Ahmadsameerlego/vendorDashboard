@@ -170,7 +170,7 @@
     </div>
     <!-- end side links -->
 
-    <div class="side-footer font10">
+    <!-- <div class="side-footer font10">
       <p class="font10">جميع الحقوق محفوظة @2024</p>
       <p class="font10">
         تصميم بواسطة
@@ -182,7 +182,7 @@
           >احمد سمير</a
         >
       </p>
-    </div>
+    </div> -->
   </nav>
 </template>
 
