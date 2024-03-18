@@ -144,6 +144,39 @@
             ></textarea>
           </div>
         </div>
+
+        <h6 class="bold border-bottom">الاضافات</h6>
+        <div
+          class="feature w-md-75"
+          v-for="(feature, index) in features"
+          :key="index"
+        >
+          <div class="d-flex align-items-center">
+            <div class="mb-2 w-50">
+              <label for=""> الاضافة ({{ index + 1 }}) </label>
+              <input
+                type="text"
+                placeholder="الرجاء ادخال اسم الاضافة"
+                class="form-control"
+              />
+            </div>
+            <div class="mb-2 w-50 mx-3">
+              <label for=""> السعر {{ index + 1 }} </label>
+              <input
+                type="number"
+                placeholder="الرجاء ادخال سعر الاضافة"
+                class="form-control"
+              />
+            </div>
+
+            <div class="mt-4" @click="deleteFeature(index)">
+              <i class="far fa-trash-alt color-red"></i>
+            </div>
+          </div>
+        </div>
+        <button class="button1 mt-2" @click="addFeature" type="button">
+          اضافة جديدة
+        </button>
       </div>
 
       <button class="button1 mt-3 material-button" type="button">
@@ -158,12 +191,21 @@ export default {
   name: "VendorDashboardAddProduct",
 
   data() {
-    return {};
+    return {
+      features: [],
+    };
   },
 
   mounted() {},
 
-  methods: {},
+  methods: {
+    addFeature() {
+      this.features.push({});
+    },
+    deleteFeature(index) {
+      this.features.splice(index, 1);
+    },
+  },
 };
 </script>
 
