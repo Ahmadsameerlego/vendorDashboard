@@ -73,38 +73,6 @@
             />
           </div>
 
-          <div class="row justify-content-between">
-            <div class="form-group p-0 col-md ml-lang2">
-              <label class="bold font14" for="exampleInputEmail1">
-                سعر المنتج
-                <span style="color: #ff3333; margin: auto 20px">
-                  *
-                </span></label
-              >
-              <input
-                type="number"
-                class="form-control"
-                id="exampleInputEmail1"
-                placeholder="الرجاء ادخال سعر المنتج"
-              />
-            </div>
-
-            <div class="form-group p-0 col-md mr-lang2">
-              <label class="bold font14" for="exampleInputEmail1">
-                سعر المنتج بعد الخصم
-                <span style="color: #ff3333; margin: auto 20px">
-                  *
-                </span></label
-              >
-              <input
-                type="number"
-                class="form-control"
-                id="exampleInputEmail1"
-                placeholder="الرجاء ادخال سعر المنتج بعد الخصم "
-              />
-            </div>
-          </div>
-
           <div class="form-group">
             <label class="bold font14" for="exampleInputEmail1">
               تحديد القسم
@@ -145,7 +113,49 @@
           </div>
         </div>
 
-        <h6 class="bold border-bottom">الاضافات</h6>
+        <h6 class="bold border-bottom mt-5">الاحجام</h6>
+        <div
+          class="feature w-md-75"
+          v-for="(feature, index) in sizes"
+          :key="index"
+        >
+          <div class="d-flex align-items-center">
+            <div class="mb-2 w-50">
+              <label for=""> حجم ({{ index + 1 }}) </label>
+              <select name="" id="" class="form-control">
+                <option value="" selected disabled hidden>اختر الحجم</option>
+                <option value="">sm</option>
+                <option value="">md</option>
+                <option value="">lg</option>
+              </select>
+            </div>
+            <div class="mb-2 w-50 mx-3">
+              <label for=""> السعر {{ index + 1 }} </label>
+              <input
+                type="number"
+                placeholder="الرجاء ادخال سعر الحجم"
+                class="form-control"
+              />
+            </div>
+            <div class="mb-2 w-50 mx-3">
+              <label for=""> سعر الخصم {{ index + 1 }} </label>
+              <input
+                type="number"
+                placeholder="الرجاء ادخال سعر الخصم ان وجد"
+                class="form-control"
+              />
+            </div>
+
+            <div class="mt-4" @click="deleteSize(index)">
+              <i class="far fa-trash-alt color-red"></i>
+            </div>
+          </div>
+        </div>
+        <button class="button1 mt-2" @click="addSize" type="button">
+          اضافة جديدة
+        </button>
+
+        <h6 class="bold border-bottom mt-5">الاضافات</h6>
         <div
           class="feature w-md-75"
           v-for="(feature, index) in features"
@@ -193,6 +203,7 @@ export default {
   data() {
     return {
       features: [],
+      sizes: [],
     };
   },
 
@@ -204,6 +215,12 @@ export default {
     },
     deleteFeature(index) {
       this.features.splice(index, 1);
+    },
+    addSize() {
+      this.sizes.push({});
+    },
+    deleteSize(index) {
+      this.sizes.splice(index, 1);
     },
   },
 };

@@ -16,7 +16,8 @@ import contactUs from "../views/contactUs.vue";
 import notification from "../views/notificationsView.vue";
 import loginView from "../views/loginView.vue";
 import register from "../views/registerView.vue";
-import completeRegister from "../views/completeRegister.vue"
+import completeRegister from "../views/completeRegister.vue";
+import discounts from "../views/discountsView.vue";
 const routes = [
   {
     path: "/",
@@ -90,6 +91,10 @@ const routes = [
   {
     path: "/completeRegister",
     component: completeRegister,
+  },
+  {
+    path: "/discounts",
+    component: discounts,
   },
 ];
 

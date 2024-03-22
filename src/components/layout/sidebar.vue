@@ -144,6 +144,18 @@
           </li>
 
           <li class="side-button material-button p-1 round5 mt-1">
+            <router-link class="color-gray" to="/discounts">
+              <button class="dashboard-button color-gray">
+                <i class="fa fa-boxes"></i>
+              </button>
+              <div class="side-button-content">
+                <span class="font12 ml-2 mr-2">الخصومات</span>
+                <i class="fa fa-angle-left y180"></i>
+              </div>
+            </router-link>
+          </li>
+
+          <li class="side-button material-button p-1 round5 mt-1">
             <router-link class="color-gray" to="/contactUs">
               <button class="dashboard-button color-gray">
                 <i class="fa fa-phone-alt"></i>

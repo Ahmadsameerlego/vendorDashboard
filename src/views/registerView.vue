@@ -78,6 +78,20 @@
 
         <div class="form-group">
           <label class="bold font14" for="exampleInputEmail1">
+            رقم الهوية
+            <span style="color: #ff3333; margin: auto 20px"> * </span></label
+          >
+          <input
+            type="number"
+            class="form-control"
+            id="exampleInputEmail1"
+            aria-describedby="emailHelp"
+            placeholder="رقم الهوية"
+          />
+        </div>
+
+        <div class="form-group">
+          <label class="bold font14" for="exampleInputEmail1">
             رقم الهاتف
             <span style="color: #ff3333; margin: auto 20px"> * </span></label
           >
@@ -168,4 +182,8 @@ export default {
 };
 </script>
 
-<style lang="scss" scoped></style>
+<style lang="scss">
+select.form-control{
+      background-blend-mode: exclusion;
+}
+</style>
