@@ -11,22 +11,32 @@
       <p class="m-3">من اجل تسجيل متجرك يرجى ادخال البيانات التالية</p>
     </div>
 
-    <div class="w-md-50 m-auto round10 p-3 pl-4 pr-4 form-cont">
+     <div class=" m-auto round10 p-3 pl-4 pr-4 form-cont">
       <div class="container register-header m-auto">
-        <div class="current">
+        <div class="active">
           <span class="select-register-step">1</span>
           <span class="font16 bold"> البيانات الاساسية </span>
         </div>
         <div class="line-between"></div>
-        <div>
+        <div class="current">
           <span class="select-register-step">2</span>
           <span class="font16 bold"> بيانات المتجر </span>
+        </div>
+        <div class="line-between"></div>
+        <div class="current">
+          <span class="select-register-step">3</span>
+          <span class="font16 bold"> اوقات العمل </span>
+        </div>
+        <div class="line-between"></div>
+        <div class="current">
+          <span class="select-register-step">4</span>
+          <span class="font16 bold"> البيانات البنكية </span>
         </div>
       </div>
     </div>
 
-    <div class="w-md-50 m-auto round10 p-3 form-cont">
-      <form action="" class="container">
+    <div class="m-auto round10 p-3 form-cont">
+      <form ref="managerData" class="container"  @submit.prevent="storeManagerData">
         <h6 class="bold border-bottom pt-3 pb-3 mb-4">بيانات مدير النظام</h6>
 
         <div class="form-group">
@@ -50,8 +60,9 @@
                   onchange="viewImg(event ,'#view1')"
                   class="d-none"
                   type="file"
-                  name=""
+                  name="image"
                   id="file1"
+                  required
                 />
               </label>
             </div>
@@ -68,11 +79,13 @@
             <span style="color: #ff3333; margin: auto 20px"> * </span></label
           >
           <input
-            type="email"
+            type="text"
             class="form-control"
             id="exampleInputEmail1"
             aria-describedby="emailHelp"
             placeholder="اسم مدير النظام"
+            name="manager_name"
+            required
           />
         </div>
 
@@ -82,12 +95,17 @@
             <span style="color: #ff3333; margin: auto 20px"> * </span></label
           >
           <input
-            type="number"
+            type="tel"
             class="form-control"
             id="exampleInputEmail1"
             aria-describedby="emailHelp"
             placeholder="رقم الهوية"
+            name="identity_number"
+            required
+            v-model="identity_number"
           />
+          <span class="text-danger" v-if="isIDentityValid">يجب ان يتكون رقم الهوية من 10 ارقام</span>
+
         </div>
 
         <div class="form-group">
@@ -97,17 +115,21 @@
           >
           <div class="row">
             <div class="col-4 col-md-2 p-1 pr-0">
-              <select class="form-control">
-                <option selected disabled>+966</option>
+              <select class="form-control" name="country_key">
+                <option v-for="count in countries" :value="count.code" :key="count.id"> {{ count.code }} </option>
               </select>
             </div>
             <div class="col pt-1 pb-1 pl-0 pr-1">
               <input
-                type="text"
+                type="tel"
                 class="form-control"
                 aria-describedby="emailHelp"
                 placeholder="رقم الهاتف"
+                name="phone"
+                v-model="phone"
+                required
               />
+              <span class="text-danger" v-if="!isPhoneValid&&isPhoneEntered">يجب ان يكون رقم الهاتف اكبر من او يساي 9 ارقام</span>
             </div>
           </div>
         </div>
@@ -123,6 +145,8 @@
             id="exampleInputEmail1"
             aria-describedby="emailHelp"
             placeholder="البريد الالكتروني"
+            name="email"
+            required
           />
         </div>
 
@@ -135,6 +159,9 @@
               id="Password1"
               aria-describedby="emailHelp"
               placeholder="كلمة المرور"
+              name="password"
+              v-model="password"
+              required
             />
             <i class="fa fa-eye color-gray" id="signInShowPassword1"></i>
           </div>
@@ -149,13 +176,17 @@
               id="Password2"
               aria-describedby="emailHelp"
               placeholder="كلمة المرور"
+              v-model="password_confirmation"
+              required
             />
             <i class="fa fa-eye color-gray" id="signInShowPassword2"></i>
           </div>
         </div>
 
-        <button class="button1 w-100 mt-3 material-button">
-          <router-link to="/completeRegister"> استكمال </router-link>
+        <button class="button1 w-100 mt-3 material-button" :disabled="!isPassowrdMatch">
+          <!-- <router-link to="/completeRegister"> -->
+             استكمال 
+            <!-- </router-link> -->
         </button>
 
         <div class="text-center p-3">
@@ -169,16 +200,76 @@
 </template>
 
 <script>
+import axios from 'axios';
 export default {
   name: "VendorDashboardRegisterView",
 
   data() {
-    return {};
+    return {
+      password: '',
+      password_confirmation : '',
+      countries: [],
+      phone: '',
+      isPhoneEntered: false,
+      identity_number: '',
+      isIDentityValid : false
+    };
+  },
+  watch: {
+    phone() {
+      this.isPhoneEntered = true
+    },
+    identity_number() {
+      this.isIDentityValid = true
+      if (this.identity_number.length == 10) {
+        this.isIDentityValid = false;
+      } else {
+        this.isIDentityValid = true
+      }
+    }
+  }
+  ,
+  computed:{
+      isPassowrdMatch(){
+        return  this.password === this.password_confirmation&& this.password !=='' && this.password.length >= 6&&this.phone.length>=9
+    },
+    isPhoneValid() {
+        return this.phone.length >= 9
+      }
+  },
+  mounted() {
+    this.getCountries();
   },
 
-  mounted() {},
+  methods: {
+    // get countries 
+    async getCountries() {
+      await axios.get('countries')
+        .then((res) => {
+        this.countries = res.data.data
+      } )
+    },
+    storeManagerData() {
+      const formData = {
+          manager_name: this.$refs.managerData.manager_name.value,
+          email: this.$refs.managerData.email.value,
+          image: this.$refs.managerData.image.value,
+          country_key: this.$refs.managerData.country_key.value,
+          phone: this.$refs.managerData.phone.value,
+          identity_number: this.$refs.managerData.identity_number.value,
+          password: this.$refs.managerData.password.value,
+        };
 
-  methods: {},
+        // Convert the data to a JSON string
+        const jsonData = JSON.stringify(formData);
+
+        // Store the JSON string in localStorage
+      localStorage.setItem('managerData', jsonData);
+            setTimeout(() => {
+              this.$router.push('/completeRegister');
+            }, 200);
+    }
+  },
 };
 </script>
 

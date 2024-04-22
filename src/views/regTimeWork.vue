@@ -1,0 +1,389 @@
+<template>
+  <div class="background">
+    <img src="@/assets/imgs/bg/header.svg" alt="" />
+  </div>
+
+  <!-- start page content -->
+
+  <div class="page-content">
+    <div class="mt-4 mb-3 text-center">
+      <h5 class="bold">انشاء حساب جديد</h5>
+      <p class="m-3">من اجل تسجيل متجرك يرجى ادخال البيانات التالية</p>
+    </div>
+
+ <div class=" m-auto round10 p-3 pl-4 pr-4 form-cont">
+      <div class="container register-header m-auto">
+        <div class="active">
+          <span class="select-register-step">1</span>
+          <span class="font16 bold"> البيانات الاساسية </span>
+        </div>
+        <div class="line-between"></div>
+        <div class="current">
+          <span class="select-register-step">2</span>
+          <span class="font16 bold"> بيانات المتجر </span>
+        </div>
+        <div class="line-between"></div>
+        <div class="current">
+          <span class="select-register-step">3</span>
+          <span class="font16 bold"> اوقات العمل </span>
+        </div>
+        <div class="line-between"></div>
+        <div class="current">
+          <span class="select-register-step">4</span>
+          <span class="font16 bold"> البيانات البنكية </span>
+        </div>
+      </div>
+    </div>
+
+
+
+    <div class="m-auto round10 p-3 pl-4 pr-4 form-cont">
+      <div class="">
+        <h6 class="bold border-bottom pt-3 pb-3 mb-3">اوقات العمل</h6>
+
+         <section id="checks" class="white-bg round7 mt-4 mb-4 p-3">
+            <div class="row">
+              <div class="col-lg-6">
+                <div class="d-flex justify-content-between align-items-center">
+                  <h6 class="font-weight-bold">ايام الاسبوع</h6>
+                  <h6 class="font-weight-bold" style="margin-left: 50px">
+                    متاح / غير متاح
+                  </h6>
+                </div>
+              </div>
+            </div>
+            <hr />
+
+            <form class="">
+              <div class="row">
+                <div class="col-lg-12">
+                  <section class="items">
+                    <div
+                      class="item d-flex justify-content-between align-items-baseline"
+                    >
+                      <h6 class="font-weight-bold">السبت</h6>
+                      <label class="switch mt-4">
+                        <input type="checkbox" v-model="satCheck" />
+                        <span class="slider round"></span>
+                      </label>
+
+                      <div class="d-flex" v-if="isSatCheck" style="transform: translateY(-30px)">
+                        <div>
+                          <label for="">من</label>
+                          <input
+                            type="time"
+                            class="form-control"
+                            placeholder="من"
+                          />
+                        </div>
+
+                        <div class="mx-4">
+                          <label for="">الى</label>
+
+                          <input
+                            type="time"
+                            class="form-control"
+                            placeholder="الى"
+                          />
+                        </div>
+                      </div>
+                    </div>
+
+                    <div
+                      class="item d-flex justify-content-between align-items-center"
+                    >
+                      <h6 class="font-weight-bold">الاحد</h6>
+                      <label class="switch">
+                        <input type="checkbox" v-model="sunCheck"  />
+                        <span class="slider round"></span>
+                      </label>
+                      <div v-if="isSunCheck" class="d-flex" style="transform: translateY(-30px)"  >
+                        <div>
+                          <label for="">من</label>
+                          <input
+                            type="time"
+                            class="form-control"
+                            placeholder="من"
+                          />
+                        </div>
+
+                        <div class="mx-4">
+                          <label for="">الى</label>
+
+                          <input
+                            type="time"
+                            class="form-control"
+                            placeholder="الى"
+                          />
+                        </div>
+                      </div>
+                    </div>
+
+                    <div
+                      class="item d-flex justify-content-between align-items-center"
+                    >
+                      <h6 class="font-weight-bold">الاثنين</h6>
+                      <label class="switch">
+                        <input type="checkbox" v-model="monCheck"  />
+                        <span class="slider round"></span>
+                      </label>
+                      <div class="d-flex" style="transform: translateY(-30px)" v-if="iMonCheck">
+                        <div>
+                          <label for="">من</label>
+                          <input
+                            type="time"
+                            class="form-control"
+                            placeholder="من"
+                          />
+                        </div>
+
+                        <div class="mx-4">
+                          <label for="">الى</label>
+
+                          <input
+                            type="time"
+                            class="form-control"
+                            placeholder="الى"
+                          />
+                        </div>
+                      </div>
+                    </div>
+
+                    <div
+                      class="item d-flex justify-content-between align-items-center"
+                    >
+                      <h6 class="font-weight-bold">الثلاثاء</h6>
+                      <label class="switch">
+                        <input type="checkbox"  v-model="thuCheck" />
+                        <span class="slider round"></span>
+                      </label>
+                      <div class="d-flex" style="transform: translateY(-30px)" v-if="isThuCheck">
+                        <div>
+                          <label for="">من</label>
+                          <input
+                            type="time"
+                            class="form-control"
+                            placeholder="من"
+                          />
+                        </div>
+
+                        <div class="mx-4">
+                          <label for="">الى</label>
+
+                          <input
+                            type="time"
+                            class="form-control"
+                            placeholder="الى"
+                          />
+                        </div>
+                      </div>
+                    </div>
+
+                    <div
+                      class="item d-flex justify-content-between align-items-center"
+                    >
+                      <h6 class="font-weight-bold">الاربعاء</h6>
+                      <label class="switch">
+                        <input type="checkbox" v-model="wedCheck"/>
+                        <span class="slider round"></span>
+                      </label>
+                      <div class="d-flex" style="transform: translateY(-30px)" v-if="isWedCheck">
+                        <div>
+                          <label for="">من</label>
+                          <input
+                            type="time"
+                            class="form-control"
+                            placeholder="من"
+                          />
+                        </div>
+
+                        <div class="mx-4">
+                          <label for="">الى</label>
+
+                          <input
+                            type="time"
+                            class="form-control"
+                            placeholder="الى"
+                          />
+                        </div>
+                      </div>
+                    </div>
+
+                    <div
+                      class="item d-flex justify-content-between align-items-center"
+                    >
+                      <h6 class="font-weight-bold">الخميس</h6>
+                      <label class="switch">
+                        <input type="checkbox" v-model="tueCheck" />
+                        <span class="slider round"></span>
+                      </label>
+                      <div class="d-flex" style="transform: translateY(-30px)" v-if="isTueCheck">
+                        <div>
+                          <label for="">من</label>
+                          <input
+                            type="time"
+                            class="form-control"
+                            placeholder="من"
+                          />
+                        </div>
+
+                        <div class="mx-4">
+                          <label for="">الى</label>
+
+                          <input
+                            type="time"
+                            class="form-control"
+                            placeholder="الى"
+                          />
+                        </div>
+                      </div>
+                    </div>
+
+                    <div
+                      class="item d-flex justify-content-between align-items-center"
+                    >
+                      <h6 class="font-weight-bold">الجمعة</h6>
+                      <label class="switch">
+                        <input type="checkbox" v-model="fridCheck" />
+                        <span class="slider round"></span>
+                      </label>
+                      <div class="d-flex" style="transform: translateY(-30px)" v-if="isFriCheck">
+                        <div>
+                          <label for="">من</label>
+                          <input
+                            type="time"
+                            class="form-control"
+                            placeholder="من"
+                          />
+                        </div>
+
+                        <div class="mx-4">
+                          <label for="">الى</label>
+
+                          <input
+                            type="time"
+                            class="form-control"
+                            placeholder="الى"
+                          />
+                        </div>
+                      </div>
+                    </div>
+                  </section>
+                </div>
+              </div>
+              <button class="button1 mt-3 material-button">
+                حفظ التغييرات
+              </button>
+            </form>
+          </section>
+      </div>
+    </div>
+
+  </div>
+</template>
+
+<script>
+import axios from 'axios';
+// import MultiSelect from 'primevue/multiselect';
+
+export default {
+  name: "VendorDashboardCompleteRegister",
+
+  data() {
+    return {
+      countries : [],
+      categories: [],
+      selectedCategories: null,
+      satCheck: null,
+      isSatCheck: false,
+      isThuCheck: false,
+      thuCheck: null,
+      monCheck: null,
+      iMonCheck: false,
+      sunCheck: null,
+      isSunCheck: false,
+      isFriCheck: false,
+      fridCheck: null,
+      isTueCheck: false,
+      tueCheck: null,
+      isWedCheck: false,
+      wedCheck : null
+    };
+  },
+  watch: {
+    satCheck() {
+      if(this.satCheck  == true) this.isSatCheck = true ;
+      else this.isSatCheck = false ;
+    },
+    sunCheck() {
+      if(this.sunCheck  == true) this.isSunCheck = true ;
+      else this.isSunCheck = false ;
+    },
+    monCheck() {
+      if(this.monCheck  == true) this.iMonCheck = true ;
+      else this.iMonCheck = false ;
+    },
+    thuCheck() {
+      if(this.thuCheck  == true) this.isThuCheck = true ;
+      else this.isThuCheck = false ;
+    },
+    wedCheck() {
+      if(this.wedCheck  == true) this.isWedCheck = true ;
+      else this.isWedCheck = false ;
+    },
+    tueCheck() {
+      if(this.tueCheck  == true) this.isTueCheck = true ;
+      else this.isTueCheck = false ;
+    },
+    fridCheck() {
+      if(this.fridCheck  == true) this.isFriCheck = true ;
+      else this.isFriCheck = false ;
+    },
+  },
+  mounted() {
+    this.getCountries();
+    this.getcategories();
+  },
+
+  methods: {
+    async getCountries() {
+      await axios.get('countries')
+        .then((res) => {
+        this.countries = res.data.data
+      } )
+    },
+    async getcategories() {
+      await axios.get('categories')
+        .then((res) => {
+        this.categories = res.data.data
+      } )
+    },
+  },
+  components: {
+    // MultiSelect
+  }
+};
+</script>
+
+<style lang="scss" >
+.p-multiselect{
+      display: block;
+    width: 100%;
+    height: calc(1.5em + .75rem + 2px);
+    padding: .375rem .75rem;
+    font-size: 1rem;
+    font-weight: 400;
+    line-height: 1.5;
+    color: #495057;
+    background-color: #fff;
+    background-clip: padding-box;
+    border: 1px solid #ced4da;
+    border-radius: .25rem;
+    transition: border-color .15s ease-in-out, box-shadow .15s ease-in-out;
+}
+.p-multiselect-trigger{
+      position: absolute;
+    left: 0px;
+    top: 43px;
+}
+</style>

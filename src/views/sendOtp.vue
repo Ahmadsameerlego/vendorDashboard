@@ -14,78 +14,38 @@
           </div>
 
           <form @submit.prevent="login" class="container loginForm" ref="loginForm">
-            <h6 class="bold text-center">تسجيل الدخول</h6>
-            <p class="text-center">برجاء ادخال بيانات حسابك حتى تتمكن الدخول</p>
+            <h6 class="bold text-center">هل نسيت كلمة المرور؟</h6>
+            <p class="text-center">برجاء ادخال الرقم المرسل الى هاتفك</p>
 
             <div class="form-group">
               <label class="bold font14" for="exampleInputEmail1">
-                رقم الهاتف
+                ادخل الرقم
                 <span style="color: #ff3333; margin: auto 20px">
                   *
                 </span></label
               >
-              <div class="row">
-                <div class="col-4 col-md-2 p-1 pr-0">
-                  <select class="form-control" name="country_key">
-                    <option
-                      v-for="count in countries"
-                      :value="count.code"
-                      :key="count.id"
-                    >
-                      {{ count.code }}
-                    </option>
-                  </select>
-                </div>
-                <div class="col pt-1 pb-1 pl-0 pr-1">
-                  <input
-                    type="tel"
+               <input
+                    type="number"
                     class="form-control"
+                    id="exampleInputEmail1"
                     aria-describedby="emailHelp"
-                    placeholder="رقم الهاتف"
-                    name="phone"
-                    v-model="phone"
-                    required
-                  />
-                 
-                </div>
-              </div>
-            </div>
-
-            <div class="form-group">
-              <label class="bold font14" for="Password1"> كلمة المرور </label>
-              <div class="password-cont">
-                <input
-                  type="password"
-                  class="form-control"
-                  id="Password1"
-                  aria-describedby="emailHelp"
-                  name="password"
-                  placeholder="كلمة المرور"
+                    placeholder="ادخل الرقم"
+                    name="code"
+                    v-model="code"
                 />
-                <i class="fa fa-eye color-gray" id="signInShowPassword1"></i>
-              </div>
             </div>
 
-            <div class="text-align2">
-              <router-link to="/forgetPassword" class="gray-a"
-                >هل نسيت كلمة المرور؟</router-link
-              >
-            </div>
+           
+
+           
 
             <button class="button1 w-100 mt-3 material-button" :disabled="disabled">
-              تسجيل الدخول
+              التالي
               <ProgressSpinner v-if="disabled" />
 
             </button>
 
-            <div class="text-center p-3">
-              <p>
-                ليس لديك حساب؟
-                <router-link to="/register" class="color2"
-                  >اضغط هنا</router-link
-                >
-              </p>
-            </div>
+            
           </form>
         </div>
       </div>
@@ -107,7 +67,10 @@ export default {
   data() {
     return {
       countries: [],
-      disabled : false
+        disabled: false,
+        phone: '',
+        country_key: '',
+      code : ""
     };
   },
 
@@ -132,17 +95,18 @@ export default {
     // login 
     async login() {
       this.disabled = true;
-      const fd = new FormData(this.$refs.loginForm)
-      fd.append('device_type', 'web')
-      fd.append('device_id', localStorage.getItem('device_id'))
+        const fd = new FormData(this.$refs.loginForm)
+        fd.append('phone', localStorage.getItem('phone'))
+        fd.append('country_key', localStorage.getItem('country_key'))
 
-      await axios.post('store/login', fd)
+      await axios.post('store/forget-password-check-code', fd)
         .then((res) => {
           if (res.data.key == 'success') {
             this.$toast.add({ severity: 'success', summary: res.data.msg, life: 4000 });
             setTimeout(() => {
-              this.$router.push('/')
-            }, 3000);
+              this.$router.push('/resetPassword')
+            }, 2000);
+            localStorage.setItem('code', this.code)
           } else {
             this.$toast.add({ severity: 'error', summary: res.data.msg, life: 4000 });
           }

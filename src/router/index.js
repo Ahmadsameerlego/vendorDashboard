@@ -18,7 +18,20 @@ import loginView from "../views/loginView.vue";
 import register from "../views/registerView.vue";
 import completeRegister from "../views/completeRegister.vue";
 import discounts from "../views/discountsView.vue";
+import forgetPassword from "../views/forgetPassword.vue"
+import sendOtp from "../views/sendOtp.vue"
+import resetPassword from "../views/resetPassword.vue";
+import timeWork from "../views/regTimeWork.vue";
+import bankData from "../views/bankData.vue"
 const routes = [
+  {
+    path: "/bankData",
+    component: bankData,
+  },
+  {
+    path: "/timeWork",
+    component: timeWork,
+  },
   {
     path: "/",
     name: "home",
@@ -95,6 +108,18 @@ const routes = [
   {
     path: "/discounts",
     component: discounts,
+  },
+  {
+    path: "/forgetPassword",
+    component: forgetPassword,
+  },
+  {
+    path: "/sendOtp",
+    component: sendOtp,
+  },
+  {
+    path: "/resetPassword",
+    component: resetPassword,
   },
 ];
 

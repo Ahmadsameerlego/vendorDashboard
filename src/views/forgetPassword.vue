@@ -14,8 +14,8 @@
           </div>
 
           <form @submit.prevent="login" class="container loginForm" ref="loginForm">
-            <h6 class="bold text-center">تسجيل الدخول</h6>
-            <p class="text-center">برجاء ادخال بيانات حسابك حتى تتمكن الدخول</p>
+            <h6 class="bold text-center">هل نسيت كلمة المرور؟</h6>
+            <p class="text-center">برجاء ادخال بيانات حسابك حتى تتمكن من استرجاعه</p>
 
             <div class="form-group">
               <label class="bold font14" for="exampleInputEmail1">
@@ -26,7 +26,7 @@
               >
               <div class="row">
                 <div class="col-4 col-md-2 p-1 pr-0">
-                  <select class="form-control" name="country_key">
+                  <select class="form-control" name="country_key" v-model="country_key">
                     <option
                       v-for="count in countries"
                       :value="count.code"
@@ -51,41 +51,17 @@
               </div>
             </div>
 
-            <div class="form-group">
-              <label class="bold font14" for="Password1"> كلمة المرور </label>
-              <div class="password-cont">
-                <input
-                  type="password"
-                  class="form-control"
-                  id="Password1"
-                  aria-describedby="emailHelp"
-                  name="password"
-                  placeholder="كلمة المرور"
-                />
-                <i class="fa fa-eye color-gray" id="signInShowPassword1"></i>
-              </div>
-            </div>
+           
 
-            <div class="text-align2">
-              <router-link to="/forgetPassword" class="gray-a"
-                >هل نسيت كلمة المرور؟</router-link
-              >
-            </div>
+           
 
             <button class="button1 w-100 mt-3 material-button" :disabled="disabled">
-              تسجيل الدخول
+              التالي
               <ProgressSpinner v-if="disabled" />
 
             </button>
 
-            <div class="text-center p-3">
-              <p>
-                ليس لديك حساب؟
-                <router-link to="/register" class="color2"
-                  >اضغط هنا</router-link
-                >
-              </p>
-            </div>
+            
           </form>
         </div>
       </div>
@@ -107,7 +83,9 @@ export default {
   data() {
     return {
       countries: [],
-      disabled : false
+        disabled: false,
+        phone: '',
+      country_key : ''
     };
   },
 
@@ -133,16 +111,16 @@ export default {
     async login() {
       this.disabled = true;
       const fd = new FormData(this.$refs.loginForm)
-      fd.append('device_type', 'web')
-      fd.append('device_id', localStorage.getItem('device_id'))
 
-      await axios.post('store/login', fd)
+      await axios.post('store/forget-password', fd)
         .then((res) => {
           if (res.data.key == 'success') {
             this.$toast.add({ severity: 'success', summary: res.data.msg, life: 4000 });
             setTimeout(() => {
-              this.$router.push('/')
-            }, 3000);
+              this.$router.push('/sendOtp')
+            }, 2000);
+            localStorage.setItem('phone', this.phone)
+            localStorage.setItem('country_key', this.country_key)
           } else {
             this.$toast.add({ severity: 'error', summary: res.data.msg, life: 4000 });
           }

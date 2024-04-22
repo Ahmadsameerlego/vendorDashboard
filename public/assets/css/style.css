@@ -3032,3 +3032,11 @@ option {
 hr {
   opacity: 0.5;
 } /*# sourceMappingURL=statics.css.map */
+
+.button1:disabled{
+  opacity: .6;
+  cursor: not-allowed;
+}
+input[type="tel"]{
+  direction: rtl !important;
+}
