@@ -18,12 +18,12 @@
           <span class="font16 bold"> البيانات الاساسية </span>
         </div>
         <div class="line-between"></div>
-        <div class="current">
+        <div class=" active">
           <span class="select-register-step">2</span>
           <span class="font16 bold"> بيانات المتجر </span>
         </div>
         <div class="line-between"></div>
-        <div class="current">
+        <div class="current active">
           <span class="select-register-step">3</span>
           <span class="font16 bold"> اوقات العمل </span>
         </div>
@@ -74,6 +74,9 @@
                             type="time"
                             class="form-control"
                             placeholder="من"
+                            @select="setDay"
+                            @change="setDay"
+                            v-model="satFrom"
                           />
                         </div>
 
@@ -84,6 +87,7 @@
                             type="time"
                             class="form-control"
                             placeholder="الى"
+                            v-model="satTo"
                           />
                         </div>
                       </div>
@@ -104,6 +108,7 @@
                             type="time"
                             class="form-control"
                             placeholder="من"
+                            v-model="sunFrom"
                           />
                         </div>
 
@@ -114,6 +119,7 @@
                             type="time"
                             class="form-control"
                             placeholder="الى"
+                            v-model="sunTo"
                           />
                         </div>
                       </div>
@@ -134,6 +140,7 @@
                             type="time"
                             class="form-control"
                             placeholder="من"
+                            v-model="monFrom"
                           />
                         </div>
 
@@ -144,6 +151,7 @@
                             type="time"
                             class="form-control"
                             placeholder="الى"
+                            v-model="monTo"
                           />
                         </div>
                       </div>
@@ -164,6 +172,7 @@
                             type="time"
                             class="form-control"
                             placeholder="من"
+                            v-model="tueFrom"
                           />
                         </div>
 
@@ -174,6 +183,7 @@
                             type="time"
                             class="form-control"
                             placeholder="الى"
+                            v-model="tueTo"
                           />
                         </div>
                       </div>
@@ -194,6 +204,7 @@
                             type="time"
                             class="form-control"
                             placeholder="من"
+                            v-model="wedFrom"
                           />
                         </div>
 
@@ -204,6 +215,7 @@
                             type="time"
                             class="form-control"
                             placeholder="الى"
+                            v-model="wedTo"
                           />
                         </div>
                       </div>
@@ -224,6 +236,7 @@
                             type="time"
                             class="form-control"
                             placeholder="من"
+                            v-model="thFrom"
                           />
                         </div>
 
@@ -234,6 +247,7 @@
                             type="time"
                             class="form-control"
                             placeholder="الى"
+                            v-model="thTo"
                           />
                         </div>
                       </div>
@@ -254,6 +268,7 @@
                             type="time"
                             class="form-control"
                             placeholder="من"
+                            v-model="friFrom"
                           />
                         </div>
 
@@ -264,6 +279,7 @@
                             type="time"
                             class="form-control"
                             placeholder="الى"
+                            v-model="friTo"
                           />
                         </div>
                       </div>
@@ -271,8 +287,13 @@
                   </section>
                 </div>
               </div>
-              <button class="button1 mt-3 material-button">
-                حفظ التغييرات
+              <button class="button1 mt-3 material-button" @click.prevent="register">
+               <span v-if="loading">
+              استكمال
+             </span> 
+             <div v-else class="spinner-border" role="status">
+              <span class="sr-only">Loading...</span>
+            </div>
               </button>
             </form>
           </section>
@@ -285,14 +306,18 @@
 <script>
 import axios from 'axios';
 // import MultiSelect from 'primevue/multiselect';
+// import moment from 'moment'
 
 export default {
   name: "VendorDashboardCompleteRegister",
 
   data() {
     return {
+      loading : true ,
       countries : [],
       categories: [],
+      satFrom: null,
+      satTo : null ,
       selectedCategories: null,
       satCheck: null,
       isSatCheck: false,
@@ -307,13 +332,29 @@ export default {
       isTueCheck: false,
       tueCheck: null,
       isWedCheck: false,
-      wedCheck : null
+      wedCheck: null,
+      sunFrom: null,
+      sunTo: null,
+      friFrom: null,
+      friTo: null,
+      thTo: null,
+      thFrom: null,
+      wedTo: null,
+      wedFrom: null,
+      tueTo: null,
+      tueFrom: null,
+      monFrom: null,
+      monTo: null,
     };
   },
   watch: {
     satCheck() {
-      if(this.satCheck  == true) this.isSatCheck = true ;
-      else this.isSatCheck = false ;
+      if (this.satCheck == true) {
+        this.isSatCheck = true;    
+      } 
+      else {
+        this.isSatCheck = false;
+      }
     },
     sunCheck() {
       if(this.sunCheck  == true) this.isSunCheck = true ;
@@ -344,8 +385,26 @@ export default {
     this.getCountries();
     this.getcategories();
   },
-
+  updated() {
+      console.log(this.times)
+  },
+  computed: {
+    times() {
+      return [
+        
+        this.satFrom !== null && this.satTo != null ? { day: "saturday", from: this.satFrom, to: this.satTo } : undefined,       
+        this.sunFrom !== null && this.sunTo != null ?  {day: "sunday" ,from: this.sunFrom,to : this.sunTo} : undefined ,        
+        this.monFrom !== null && this.monTo != null ?  {day: "Monday" ,from: this.monFrom,to : this.monTo} : undefined ,        
+        this.tueFrom !== null && this.tueTo != null ?  {day: "Tuesday" ,from: this.tueFrom,to : this.tueTo} : undefined ,        
+        this.wedFrom !== null && this.wedTo != null ?  {day: "Wednesday" ,from: this.wedFrom,to : this.wedTo} : undefined ,        
+        this.thFrom !== null && this.thTo != null ?  {day: "Thursday" ,from: this.thFrom,to : this.thTo} : undefined ,        
+        this.friFrom !== null && this.friTo != null ?  {day: "Friday" ,from: this.friFrom,to : this.friTo} : undefined ,        
+       
+      ]
+    }
+  },
   methods: {
+    
     async getCountries() {
       await axios.get('countries')
         .then((res) => {
@@ -358,6 +417,37 @@ export default {
         this.categories = res.data.data
       } )
     },
+    async register() {
+      this.loading = false;
+      const fd = new FormData()
+      const filteredTimes = this.times.filter(item => item !== undefined);
+
+      // Append filteredTimes to fd
+      fd.append('times', JSON.stringify(filteredTimes));
+
+       fd.append('device_type', 'web')
+      fd.append('device_id', 'test')
+      await axios.post('store/register-times', fd, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem('token')}`,
+          lang : 'ar'
+        }
+      })
+     
+        .then((res) => {
+          if (res.data.key === 'success') {
+            this.$toast.add({ severity: 'success', summary: res.data.msg, life: 4000 });
+            localStorage.setItem('user', JSON.stringify(res.data.data))
+            localStorage.setItem('token', res.data.data.token)
+          setTimeout(() => {
+            this.$router.push('/bankData')
+          }, 2000);
+          } else {
+          this.$toast.add({ severity: 'error', summary: res.data.msg, life: 4000 });
+          }
+        this.loading = true;
+      } )
+    }
   },
   components: {
     // MultiSelect

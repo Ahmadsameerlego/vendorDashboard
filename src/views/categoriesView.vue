@@ -3,8 +3,8 @@
     <div class="table-cont p-2">
       <div class="row align-items-center flex-column">
         <div class="dash-title col-md p-0 mt-0">
-          <h6 class="bold">الخصومات</h6>
-          <p class="mb-1">يمكنك تحديد تفاصيل الخصومات من هنا</p>
+          <h6 class="bold">الاقسام</h6>
+          <p class="mb-1">يمكنك اضافة اقسام المنتجات من هنا</p>
         </div>
 
         <div
@@ -15,41 +15,30 @@
             <div class="row">
               <div class="col-md-6 mb-3">
                 <div class="form-group">
-                  <label for="" class="bold font14">نسبة الخصم</label>
+                  <label for="" class="bold font14">اسم القسم بالعربية</label>
                   <input
-                    type="number"
-                    name="discount_percentage"
-                    v-model="discount_percentage"
+                    type="text"
+                    name="name_ar"
+                    v-model="name_ar"
                     class="form-control"
-                    placeholder="يرجى تحديد نسبة الخصم (%)"
+                    placeholder="يرجى تحديد اسم القسم بالعربية "
                   />
                 </div>
               </div>
               <div class="col-md-6 mb-3">
                 <div class="form-group">
-                  <label for="" class="bold font14">سعر الحد الادنى</label>
+                  <label for="" class="bold font14">اسم القسم بالانجليزية</label>
                   <input
-                    type="number"
+                    type="text"
                     class="form-control"
-                    placeholder="يرجى تحديد سعر الحد الادنى"
-                    name="min_price"
-                    v-model="min_price"
+                    placeholder="يرجى تحديد اسم القسم بالانجليزية"
+                    name="name_en"
+                    v-model="name_en"
                   />
                 </div>
               </div>
 
-              <div class="col-md-6 mb-3">
-                <div class="form-group">
-                  <label for="" class="bold font14">مدة العرض</label>
-                  <input
-                    type="number"
-                    class="form-control"
-                    placeholder="يرجى تحديد مدة العرض (بالأيام)"
-                    name="period"
-                    v-model="period"
-                  />
-                </div>
-              </div>
+              
             </div>
             <div class="">
               <button class="button1 mt-3 material-button px-5" :disabled="disabled">تأكيد</button>
@@ -74,31 +63,30 @@ export default {
       showTableActions: [],
       disabled: false,
       period: '',
-      min_price: '',
-      discount_percentage : ''
+      name_en: '',
+      name_ar : ''
     };
   },
 
   mounted() {},
 
   methods: {
-    openTableMenu(index) {
-      this.showTableActions[index] = !this.showTableActions[index];
-    },
+
      async discount() {
       this.disabled = true;
        const token = localStorage.getItem('token');  
         const headers = {
-          Authorization: `Bearer ${token}`,
+            Authorization: `Bearer ${token}`,
+          lang : 'ar'
       };
       const fd = new FormData(this.$refs.discountForm)
-      await axios.post('store/add-discount', fd, {headers})
+      await axios.post('store/add-menu', fd, {headers})
         .then((res) => {
           if (res.data.key == 'success') {
             this.$toast.add({ severity: 'success', summary: res.data.msg, life: 4000 });
-            this.period = '';
-            this.min_price = ''
-            this.discount_percentage = ''
+          
+            this.name_en = ''
+            this.name_ar = ''
           } else {
           this.$toast.add({ severity: 'error', summary: res.data.msg, life: 4000 });
           }

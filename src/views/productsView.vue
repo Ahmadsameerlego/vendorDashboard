@@ -19,6 +19,8 @@
                 id="dataTableSearchInput1"
                 aria-describedby="emailHelp"
                 placeholder="كلمات مفتاحية"
+                v-model="name"
+                @input="getFilteredData()"
               />
               <i class="fa fa-search color-gray"></i>
             </div>
@@ -31,9 +33,11 @@
                 name=""
                 id=""
                 style="width: 70px; height: 38px !important"
+                v-model="date"
+                @change="getData()"
               >
-                <option value="" selected>الاقدم</option>
-                <option value="">الاحدث</option>
+                <option value="old" selected>الاقدم</option>
+                <option value="recent">الاحدث</option>
               </select>
             </div>
 
@@ -68,10 +72,10 @@
           </tr>
         </thead>
         <tbody data-class-name="table-body ">
-          <tr>
-            <td>1</td>
-            <td>ماكدونالز</td>
-            <td>Mcdonalds</td>
+          <tr v-for="(product,index) in products" :key="product.id">
+            <td> {{ index+1 }} </td>
+            <td> {{ product.name_ar }} </td>
+            <td>{{ product.name_en }} </td>
             <td class="table-menu">
               <i
                 @click="openTableMenu(index)"
@@ -80,14 +84,14 @@
               <div class="menu-cont" v-if="showMenue[index]">
                 <ul class="white-bg round7 pt-1 pb-1 shadow1">
                   <li>
-                    <router-link to="/addProduct"
+                    <router-link :to="'/editProduct/'+product.id"
                       ><i class="fa fa-edit color1"></i> تعديل</router-link
                     >
                   </li>
                   <li class="border-bottom"></li>
                   <li>
-                    <a class="cp" onclick="deleteElement()"
-                      ><i class="far fa-trash-alt color-red"></i> حذف</a
+                    <button class="cp" @click.prevent="deleteProduct(product.id)"
+                      ><i class="far fa-trash-alt color-red"></i> حذف</button
                     >
                   </li>
                 </ul>
@@ -98,22 +102,73 @@
       </table>
     </div>
   </div>
+  <Toast />
 </template>
 
 <script>
+import axios from 'axios';
+import Toast from 'primevue/toast';
+
 export default {
   name: "VendorDashboardProductsView",
 
   data() {
     return {
       showMenue: [],
+      products: [],
+      name: '',
+      date : ''
     };
   },
   methods: {
     openTableMenu(index) {
       this.showMenue[index] = !this.showMenue[index];
+      // this.showMenue.forEach((el)=> el != index ? el = false  : true );
     },
+    getFilteredData() {
+      this.getData();
+    },
+     async getData() {
+        const token = localStorage.getItem('token');  
+        const headers = {
+          Authorization: `Bearer ${token}`,
+        };
+
+      await axios.get(`store/get-products?search=${this.name}&date=${this.date}`, { headers })
+        .then((res) => {
+          if (res.data.key == "success") {
+            this.products = res.data.data.products;
+        }
+      } )
+    },
+
+    async deleteProduct(id) {
+       const token = localStorage.getItem('token');  
+        const headers = {
+          Authorization: `Bearer ${token}`,
+      };
+
+      await axios.delete(`store/delete-product?product_id=${id}`, { headers })
+      .then((res) => {
+          if (res.data.key == 'success') {
+            this.$toast.add({ severity: 'success', summary: res.data.msg, life: 4000 });
+            setTimeout(() => {
+              this.getData()
+            }, 1000);
+          } else {
+          this.$toast.add({ severity: 'error', summary: res.data.msg, life: 4000 });
+          }
+        this.disabled = false;
+      } )
+    }
+    
   },
+  mounted() {
+      this.getData();
+  },
+  components: {
+      Toast
+    }
 };
 </script>
 

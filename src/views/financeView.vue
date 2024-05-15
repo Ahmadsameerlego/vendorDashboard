@@ -67,13 +67,13 @@
           </tr>
         </thead>
         <tbody data-class-name="table-body">
-          <tr>
-            <td>1</td>
-            <td>#215487</td>
-            <td>اونلاين</td>
-            <td>4000 ريال</td>
-            <td>2 يناير 2020</td>
-            <td>2 يناير 2020</td>
+          <tr v-for="(fin, index) in finance" :key="fin.id">
+            <td> {{  index  }} </td>
+            <td> {{  fin.id  }} </td>
+            <td> {{ fin.receive_method }} </td>
+            <td> {{ fin.settlement_value }}  ريال</td>
+            <td>  {{ fin.created_at }} </td>
+            <td> {{  fin.accept_date  }} </td>
             <td class="table-menu">
               <i
                 @click="openTableMenu(index)"
@@ -82,9 +82,9 @@
               <div class="menu-cont" v-if="showTableActions[index]">
                 <ul class="white-bg round7 pt-1 pb-1 shadow1">
                   <li>
-                    <a onclick="deleteElement()" href="#"
-                      ><i class="far fa-trash-alt color-red"></i> حذف</a
-                    >
+                    <button class="btn" @click="deleteFinance(fin.id)"
+                      ><i class="far fa-trash-alt color-red"></i> حذف
+                      </button>
                   </li>
                 </ul>
               </div>
@@ -97,21 +97,56 @@
 </template>
 
 <script>
+import axios from 'axios';
 export default {
   name: "VendorDashboardFinanceView",
 
   data() {
     return {
       showTableActions: [],
+      finance : []
     };
   },
 
-  mounted() {},
+  mounted() {
+    this.getAddPrice()
+  },
 
   methods: {
     openTableMenu(index) {
       this.showTableActions[index] = !this.showTableActions[index];
     },
+      async getAddPrice() {
+      const token = localStorage.getItem('token');  
+        const headers = {
+          Authorization: `Bearer ${token}`,
+        };
+      await axios.get('store/finance', { headers })
+        .then((res) => {
+          this.finance = res.data.data.finance;
+      } )
+    },
+    async deleteFinance(id) {
+        const token = localStorage.getItem('token');  
+        const headers = {
+          Authorization: `Bearer ${token}`,
+          lang : 'ar'
+        };
+
+      const fd = new FormData()
+      fd.append('settlement_id', id)
+      await axios.post('store/delete-settlement', fd, { headers })
+      .then((res) => {
+          if (res.data.key == 'success') {
+            this.$toast.add({ severity: 'success', summary: res.data.msg, life: 4000 });
+            setTimeout(() => {
+              this.getAddPrice();
+            }, 2000);
+          } else {
+          this.$toast.add({ severity: 'error', summary: res.data.msg, life: 4000 });
+          }
+      } )
+    }
   },
 };
 </script>

@@ -140,13 +140,15 @@ export default {
         .then((res) => {
           if (res.data.key == 'success') {
             this.$toast.add({ severity: 'success', summary: res.data.msg, life: 4000 });
+            localStorage.setItem('user', JSON.stringify(res.data.data))
+            localStorage.setItem('token', res.data.data.token)
             setTimeout(() => {
               this.$router.push('/')
             }, 3000);
           } else {
             this.$toast.add({ severity: 'error', summary: res.data.msg, life: 4000 });
           }
-                        this.disabled = false ;
+             this.disabled = false ;
 
         }
         )

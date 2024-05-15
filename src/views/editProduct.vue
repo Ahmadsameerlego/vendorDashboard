@@ -20,7 +20,7 @@
                 <label for="file1">
                   <div class="input-img-cont">
                     <img
-                      src="@/assets/imgs/icons/upload-img.png"
+                      :src="image"
                       id="view1"
                       class="input-img"
                       alt=""
@@ -58,6 +58,7 @@
               id="exampleInputEmail1"
               placeholder="الاسم باللغة العربية"
               name="name_ar"
+              v-model="name_ar"
             />
           </div>
 
@@ -72,6 +73,7 @@
               id="exampleInputEmail1"
               placeholder="الاسم باللغة الانجليزية "
               name="name_en"
+              v-model="name_en"
             />
           </div>
 
@@ -80,8 +82,8 @@
               تحديد القسم
               <span style="color: #ff3333; margin: auto 20px"> * </span></label
             >
-            <select class="form-control" name="menu_id">
-              <option selected disabled hidden>اختر القسم</option>
+            <select class="form-control" name="menu_id" v-model="menu_id">
+              <option :value="menu_id" selected disabled hidden> {{  CatName  }} </option>
               <option v-for="cat in cats" :key="cat.id" :value="cat.id"> {{cat.name_ar}} </option>
             </select>
           </div>
@@ -98,6 +100,7 @@
               id="exampleInputEmail1"
               placeholder="الرجاء كتابة وصف المنتج باللغة العربية "
               name="description_ar"
+              v-model="description_ar"
             ></textarea>
           </div>
 
@@ -113,6 +116,7 @@
               id="exampleInputEmail1"
               placeholder="الرجاء كتابة وصف المنتج باللغة الانجليزية "
               name="description_en"
+              v-model="description_en"
             ></textarea>
           </div>
         </div>
@@ -223,12 +227,16 @@ export default {
       cats: [],
       disabled: false,
       add_price: '',
-      add_name : ''
+      add_name: '',
+      selectedCat: null,
+      CatName: '',
+      menu_id : ''
     };
   },
 
   mounted() {
     this.getStoreCategories();
+    this.getSingleProduct();
   },
 
   methods: {
@@ -256,13 +264,44 @@ export default {
        const token = localStorage.getItem('token');  
         const headers = {
           Authorization: `Bearer ${token}`,
-          lang: 'ar'
         };
       await axios.get('store/menus', { headers })
         .then((res) => {
           this.cats = res.data.data;
       } )
+      },
+
+    // get single product 
+    async getSingleProduct() {
+      const token = localStorage.getItem('token');  
+        const headers = {
+          Authorization: `Bearer ${token}`,
+        };
+      await axios.get(`store/single-product?product_id=${this.$route.params.id}`, { headers })
+        .then((res) => {
+          if (res.data.key == 'success') {
+            const product = res.data.data;
+            this.image = product.image;
+            this.name_ar = product.name_ar;
+            this.name_en = product.name_en;
+            this.description_ar = product.description_ar;
+            this.description_en = product.description_en;
+            this.features = product.additives;
+            this.sizes = product.sizes;
+            this.CatName = product.menu.name;
+            this.menu_id = product.menu.id
+            for (let i = 0; i < this.cats.length; i++){
+              if (product.menu.id == this.cats[i].id) {
+                this.selectedCat == this.cats[i]
+              }
+            }
+            console.log(this.selectedCat)
+            console.log(this.CatName)
+            // this.description_en = product.description_en;
+          }
+      } )
     },
+    //   get product 
     async addProduct() {
       this.disabled = true;
        const token = localStorage.getItem('token');  
@@ -271,9 +310,11 @@ export default {
         };
 
       const fd = new FormData(this.$refs.addProductsForm)
-        fd.append('additives', JSON.stringify(this.features))
+      fd.append('additives', JSON.stringify(this.features))
+      fd.append('product_id', this.$route.params.id)
+      fd.append('menu_id', this.menu_id)
         fd.append('sizes', JSON.stringify(this.sizes))
-      await axios.post('store/add-product', fd, {headers})
+       await axios.post('store/update-product', fd, {headers})
         .then((res) => {
           if (res.data.key == 'success') {
             this.$toast.add({ severity: 'success', summary: res.data.msg, life: 4000 });

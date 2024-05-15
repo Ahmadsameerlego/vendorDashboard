@@ -32,6 +32,17 @@
             </router-link>
           </li>
           <li class="side-button material-button p-1 round5 mt-1">
+            <router-link class="color-gray" to="/categories">
+              <button class="dashboard-button color-gray">
+                <i class="fa fa-store"></i>
+              </button>
+              <div class="side-button-content">
+                <span class="font12 ml-2 mr-2"> الاقسام</span>
+                <i class="fa fa-angle-left y180"></i>
+              </div>
+            </router-link>
+          </li>
+          <li class="side-button material-button p-1 round5 mt-1">
             <router-link class="color-gray" to="/products">
               <button class="dashboard-button color-gray">
                 <i class="fa fa-store"></i>
@@ -107,6 +118,17 @@
               </div>
             </router-link>
           </li>
+          <li class="side-button material-button p-1 round5 mt-0">
+            <router-link class="color-gray" to="/reservations">
+              <button class="dashboard-button color-gray">
+                <i class="fa fa-money-bill"></i>
+              </button>
+              <div class="side-button-content">
+                <span class="font12 ml-2 mr-2">الحجوزات</span>
+                <i class="fa fa-angle-left y180"></i>
+              </div>
+            </router-link>
+          </li>
 
           <li class="side-button material-button p-1 round5 mt-1">
             <router-link class="color-gray" to="/settings">
@@ -167,7 +189,7 @@
             </router-link>
           </li>
           <li class="side-button material-button p-1 round5 mt-1">
-            <router-link class="color-gray" to="/login">
+            <button class="btn color-gray" @click="logout">
               <button class="dashboard-button color-gray">
                 <i class="fa color-red fa-sign-out-alt"></i>
               </button>
@@ -175,7 +197,7 @@
                 <span class="font12 ml-2 mr-2">تسجيل الخروج</span>
                 <i class="fa fa-angle-left y180"></i>
               </div>
-            </router-link>
+            </button>
           </li>
         </ul>
       </div>
@@ -196,9 +218,13 @@
       </p>
     </div> -->
   </nav>
+  <Toast />
 </template>
 
 <script>
+import axios from 'axios';
+import Toast from 'primevue/toast';
+
 export default {
   name: "VendorDashboardSidebar",
 
@@ -208,7 +234,32 @@ export default {
 
   mounted() {},
 
-  methods: {},
+  methods: {
+    async logout() {
+       const token = localStorage.getItem('token');  
+        const headers = {
+          Authorization: `Bearer ${token}`,
+      };
+      const fd = new FormData();
+      await axios.post(`store/logout?device_id=${localStorage.getItem('active_id')}&device_type=web`, fd, { headers })
+       .then((res) => {
+          if (res.data.key == 'success') {
+            this.$toast.add({ severity: 'success', summary: res.data.msg, life: 4000 });
+            localStorage.removeItem('token')
+            localStorage.removeItem('user')
+            setTimeout(() => {
+              this.$router.push('/login');
+
+            }, 1000);
+          } else {
+          this.$toast.add({ severity: 'error', summary: res.data.msg, life: 4000 });
+          }
+      } )
+    }
+  },
+  components: {
+    Toast
+  }
 };
 </script>
 

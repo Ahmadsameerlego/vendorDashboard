@@ -20,14 +20,14 @@
           </router-link>
           <div class="d-inline-block user-cont">
             <img
-              src="@/assets/imgs/users/user.png"
+              :src="user.image"
               class="m-1"
               width="30"
               height="30"
               alt=""
             />
             <div class="d-inline-block">
-              <span class="bold font10 d-block mb-0"> احمد سمير</span>
+              <span class="bold font10 d-block mb-0"> {{ user.manager_name }}</span>
               <span class="bold font8 d-block mb-0">المدير العام</span>
             </div>
           </div>
@@ -42,10 +42,13 @@ export default {
   name: "VendorDashboardDashHeader",
 
   data() {
-    return {};
+    return {user : {}};
   },
 
-  mounted() {},
+  mounted() {
+    if (localStorage.getItem("user")) {     this.user =  JSON.parse(localStorage.getItem("user"));}
+
+  },
 
   methods: {},
 };

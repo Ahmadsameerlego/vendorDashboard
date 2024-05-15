@@ -36,7 +36,7 @@
     </div>
 
     <div class="m-auto round10 p-3 form-cont">
-      <form ref="managerData" class="container"  @submit.prevent="storeManagerData">
+      <form ref="managerData" class="container"  @submit.prevent="register">
         <h6 class="bold border-bottom pt-3 pb-3 mb-4">بيانات مدير النظام</h6>
 
         <div class="form-group">
@@ -115,7 +115,7 @@
           >
           <div class="row">
             <div class="col-4 col-md-2 p-1 pr-0">
-              <select class="form-control" name="country_key">
+              <select class="form-control" name="country_key" v-model="country_key">
                 <option v-for="count in countries" :value="count.code" :key="count.id"> {{ count.code }} </option>
               </select>
             </div>
@@ -185,21 +185,69 @@
 
         <button class="button1 w-100 mt-3 material-button" :disabled="!isPassowrdMatch">
           <!-- <router-link to="/completeRegister"> -->
-             استكمال 
+             <span v-if="loading">
+              استكمال
+             </span> 
+             <div v-else class="spinner-border" role="status">
+              <span class="sr-only">Loading...</span>
+            </div>
             <!-- </router-link> -->
         </button>
 
         <div class="text-center p-3">
-          <p>لديك حساب بالفعل ؟ <a href="login.html">اضغط هنا</a></p>
+          <p>لديك حساب بالفعل ؟ <router-link to="/login" >اضغط هنا</router-link></p>
         </div>
       </form>
     </div>
   </div>
 
   <!-- end page content -->
+  <Toast />
+
+
+  <Dialog v-model:visible="visible" modal  :style="{ width: '25rem' }">
+     <form @submit.prevent="login" class="container px-5 py-5" ref="loginForm">
+            <h6 class="bold text-center">برجاء ادخال الرقم المرسل الى هاتفك</h6>
+            <!-- <p class="text-center">برجاء ادخال الرقم المرسل الى هاتفك</p> -->
+
+            <div class="form-group">
+              <label class="bold font14" for="exampleInputEmail1">
+                ادخل الرقم
+                <span style="color: #ff3333; margin: auto 20px">
+                  *
+                </span></label
+              >
+               <input
+                    type="number"
+                    class="form-control"
+                    id="exampleInputEmail1"
+                    aria-describedby="emailHelp"
+                    placeholder="ادخل الرقم"
+                    name="code"
+                    v-model="code"
+                />
+            </div>
+
+           
+
+           
+
+            <button class="button1 w-100 mt-3 material-button" :disabled="disabled">
+              التالي
+              <ProgressSpinner v-if="disabled" />
+
+            </button>
+
+            
+          </form>
+  </Dialog>
+
 </template>
 
 <script>
+import Toast from 'primevue/toast';
+import Dialog from 'primevue/dialog';
+
 import axios from 'axios';
 export default {
   name: "VendorDashboardRegisterView",
@@ -212,7 +260,12 @@ export default {
       phone: '',
       isPhoneEntered: false,
       identity_number: '',
-      isIDentityValid : false
+      isIDentityValid: false,
+      loading : true ,
+      visible: false,
+      code: '',
+      disabled: false,
+      country_key : ''
     };
   },
   watch: {
@@ -240,7 +293,10 @@ export default {
   mounted() {
     this.getCountries();
   },
-
+  components: {
+    Toast,
+    Dialog
+  },
   methods: {
     // get countries 
     async getCountries() {
@@ -268,6 +324,55 @@ export default {
             setTimeout(() => {
               this.$router.push('/completeRegister');
             }, 200);
+    },
+    async register() {
+      this.loading = false;
+      const fd = new FormData(this.$refs.managerData)
+       fd.append('device_type', 'web')
+      fd.append('device_id', 'test')
+      await axios.post('store/register', fd)
+     
+        .then((res) => {
+          if (res.data.key === 'success') {
+            this.$toast.add({ severity: 'success', summary: res.data.msg, life: 4000 });
+            localStorage.setItem('user', JSON.stringify(res.data.data))
+            localStorage.setItem('token', res.data.data.token)
+          setTimeout(() => {
+            this.visible = true;
+          }, 2000);
+          } else {
+          this.$toast.add({ severity: 'error', summary: res.data.msg, life: 4000 });
+          }
+        this.loading = true;
+      } )
+    },
+    async login() {
+      this.disabled = true;
+        const fd = new FormData(this.$refs.loginForm)
+        fd.append('phone', JSON.parse(localStorage.getItem('user')).phone.phone)
+      fd.append('country_key', this.country_key)
+      fd.append('code', this.code)
+      fd.append('device_type', 'web')
+      fd.append('device_id', 'test')
+        
+
+      await axios.post('store/activate', fd)
+        .then((res) => {
+          if (res.data.key == 'success') {
+            this.$toast.add({ severity: 'success', summary: res.data.msg, life: 4000 });
+            setTimeout(() => {
+              this.$router.push('/completeRegister')
+              this.visible = false;
+            }, 2000);
+            localStorage.setItem('code', this.code)
+          } else {
+            this.$toast.add({ severity: 'error', summary: res.data.msg, life: 4000 });
+          }
+                        this.disabled = false ;
+
+        }
+        )
+
     }
   },
 };

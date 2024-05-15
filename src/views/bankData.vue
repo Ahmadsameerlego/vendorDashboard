@@ -18,17 +18,17 @@
           <span class="font16 bold"> البيانات الاساسية </span>
         </div>
         <div class="line-between"></div>
-        <div class="current">
+        <div class="active">
           <span class="select-register-step">2</span>
           <span class="font16 bold"> بيانات المتجر </span>
         </div>
         <div class="line-between"></div>
-        <div class="current">
+        <div class="active">
           <span class="select-register-step">3</span>
           <span class="font16 bold"> اوقات العمل </span>
         </div>
         <div class="line-between"></div>
-        <div class="current">
+        <div class="active">
           <span class="select-register-step">4</span>
           <span class="font16 bold"> البيانات البنكية </span>
         </div>
@@ -37,7 +37,8 @@
 
 
     <div class="m-auto round10 p-3 pl-4 pr-4 form-cont">
-      <div class="">
+      <form ref="bankData" @submit.prevent="storeBankData">
+        <div class="">
         <h6 class="bold border-bottom pt-3 pb-3 mb-3">بيانات الحساب البنكي</h6>
 
         <div class="form-group">
@@ -51,6 +52,7 @@
             id="exampleInputEmail1"
             aria-describedby="emailHelp"
             placeholder="اسم البنك "
+            name="bank_name"
           />
         </div>
 
@@ -65,6 +67,7 @@
             id="exampleInputEmail1"
             aria-describedby="emailHelp"
             placeholder="اسم المستفيد "
+            name="beneficiary_name"
           />
         </div>
 
@@ -79,6 +82,7 @@
             id="exampleInputEmail1"
             aria-describedby="emailHelp"
             placeholder="رقم الحساب "
+            name="account_number"
           />
         </div>
          <div class="form-group">
@@ -92,18 +96,30 @@
             id="exampleInputEmail1"
             aria-describedby="emailHelp"
             placeholder="رقم الايبان "
+            name="iban_number"
           />
         </div>
       </div>
 
-      <button class="button1 w-100 mt-3 material-button">تأكيد</button>
+      <button class="button1 w-100 mt-3 material-button">
+         <span v-if="loading">
+              تاكيد
+             </span> 
+             <div v-else class="spinner-border" role="status">
+              <span class="sr-only">Loading...</span>
+              </div>
+      </button>
+      </form>
     </div>
   </div>
+  <Toast />
 </template>
 
 <script>
 import axios from 'axios';
 // import MultiSelect from 'primevue/multiselect';
+import Toast from 'primevue/toast';
+
 
 export default {
   name: "VendorDashboardCompleteRegister",
@@ -112,21 +128,8 @@ export default {
     return {
       countries : [],
       categories: [],
-      selectedCategories: null,
-      satCheck: null,
-      isSatCheck: false,
-      isThuCheck: false,
-      thuCheck: null,
-      monCheck: null,
-      iMonCheck: false,
-      sunCheck: null,
-      isSunCheck: false,
-      isFriCheck: false,
-      fridCheck: null,
-      isTueCheck: false,
-      tueCheck: null,
-      isWedCheck: false,
-      wedCheck : null
+      loading : true
+
     };
   },
   watch: {
@@ -177,9 +180,34 @@ export default {
         this.categories = res.data.data
       } )
     },
+    async storeBankData() {
+      this.loading = false;
+      const fd = new FormData(this.$refs.bankData)
+       fd.append('device_type', 'web')
+      fd.append('device_id', 'test')
+      await axios.post('store/register-bank-data', fd, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem('token')}`,
+          lang : 'ar'
+        }
+      })
+        .then((res) => {
+          if (res.data.key === 'success') {
+            this.$toast.add({ severity: 'success', summary: res.data.msg, life: 4000 });
+            localStorage.setItem('user', JSON.stringify(res.data.data))
+            localStorage.setItem('token', res.data.data.token)
+          setTimeout(() => {
+            this.$router.push('/')
+          }, 2000);
+          } else {
+          this.$toast.add({ severity: 'error', summary: res.data.msg, life: 4000 });
+          }
+        this.loading = true;
+      } )
+    }
   },
   components: {
-    // MultiSelect
+    Toast
   }
 };
 </script>

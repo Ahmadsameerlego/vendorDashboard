@@ -22,8 +22,24 @@ import forgetPassword from "../views/forgetPassword.vue"
 import sendOtp from "../views/sendOtp.vue"
 import resetPassword from "../views/resetPassword.vue";
 import timeWork from "../views/regTimeWork.vue";
-import bankData from "../views/bankData.vue"
+import bankData from "../views/bankData.vue";
+import editProduct from "../views/editProduct.vue"
+     
+import reservations from '../views/reservationsView.vue'
+import categories from '../views/categoriesView.vue'
 const routes = [
+  {
+    path: "/categories",
+    component: categories,
+  },
+  {
+    path: "/reservations",
+    component: reservations,
+  },
+  {
+    path: "/editProduct/:id",
+    component: editProduct,
+  },
   {
     path: "/bankData",
     component: bankData,

@@ -57,16 +57,16 @@
             <th></th>
           </tr>
         </thead>
-        <tbody data-class-name="table-body">
-          <tr>
-            <td>1</td>
-            <td>#215487</td>
-            <td>احمد سمير</td>
-            <td>قهوة اسبريسو</td>
-            <td>40 ريال</td>
-            <td>2 يناير 2020</td>
-            <td>2 يناير 2020</td>
-            <td>2 pm</td>
+        <tbody data-class-name="table-body" v-if="orders.length > 0">
+          <tr v-for="(order, index) in orders" :key="index">
+            <td> {{ index+1}}</td>
+            <td> {{ order.order_num }} </td>
+            <td>{{ order.user_name }}</td>
+            <td>{{ order.products }}</td>
+            <td>{{ order.total_price }} </td>
+            <td>{{ order.order_date }} </td>
+            <td>{{ order.receive_date }} </td>
+            <td>{{ order.receive_time }}</td>
             <td class="table-menu">
               <i
                 @click="showTableMenu(index)"
@@ -75,43 +75,127 @@
               <div class="menu-cont" v-if="showMenue[index]">
                 <ul class="white-bg round7 pt-1 pb-1 shadow1">
                   <li>
-                    <router-link to="/orderDetails/1"
-                      ><i class="fa fa-eye color1"></i> التفاصيل</router-link
-                    >
+                    <router-link :to="'/orderDetails/'+order.id"
+                      ><i class="fa fa-eye color1"></i> التفاصيل</router-link>
                   </li>
                   <li class="border-bottom"></li>
                   <li>
-                    <a href="#"><i class="fa fa-check color1"></i> قبول</a>
+                    <button class="btn" @click="accept(order.id)"><i class="fa fa-check color1"></i> قبول</button>
                   </li>
                   <li class="border-bottom"></li>
                   <li>
-                    <a onclick="deleteElement()" href="#"
-                      ><i class="far fa-trash-alt color-red"></i> حذف</a
-                    >
+                    <button class="btn" @click="refuse(order.id)"><i class="fa fa-check color1"></i> رفض</button>
                   </li>
                 </ul>
               </div>
             </td>
           </tr>
         </tbody>
+
+        <tbody data-class-name="table-body" v-else>
+          <td :colspan="12">
+            <Message severity="error">لا توجد طلبات الى الان</Message>
+
+          </td>
+        </tbody>
       </table>
     </div>
   </div>
+  <Toast />
 </template>
 
 <script>
+import Message from 'primevue/message';
+import Toast from 'primevue/toast';
+
+import axios from 'axios';
 export default {
   name: "VendorDashboardOrdersVue",
   data() {
     return {
       showMenue: [],
+      status: 'pending',
+      orders : []
     };
   },
   methods: {
     showTableMenu(index) {
       this.showMenue[index] = !this.showMenue[index];
     },
+    async getOrders() {
+      const token = localStorage.getItem('token');  
+        const headers = {
+          Authorization: `Bearer ${token}`,
+        };
+      await axios.get(`store/get-orders?status=${this.status}`, { headers })
+        .then((res) => {
+          this.orders = res.data.data.orders;
+      } )
+    },
+    // accept order 
+     async accept(id) {
+        const token = localStorage.getItem('token');  
+        const headers = {
+          Authorization: `Bearer ${token}`,
+          lang : 'ar'
+        };
+
+      await axios.get(`store/accept-order?order_id=${id}`, { headers })
+      .then((res) => {
+          if (res.data.key == 'success') {
+            this.$toast.add({ severity: 'success', summary: res.data.msg, life: 4000 });
+            setTimeout(() => {
+              this.getOrders();
+            }, 2000);
+          } else {
+          this.$toast.add({ severity: 'error', summary: res.data.msg, life: 4000 });
+          }
+        this.disabled = false;
+      } )
+    },
+    // accept order 
+     async refuse(id) {
+        const token = localStorage.getItem('token');  
+        const headers = {
+          Authorization: `Bearer ${token}`,
+          lang : 'ar'
+        };
+
+      await axios.get(`store/refuse-order?order_id=${id}`, { headers })
+      .then((res) => {
+          if (res.data.key == 'success') {
+            this.$toast.add({ severity: 'success', summary: res.data.msg, life: 4000 });
+            setTimeout(() => {
+              this.getOrders();
+            }, 2000);
+          } else {
+          this.$toast.add({ severity: 'error', summary: res.data.msg, life: 4000 });
+          }
+        this.disabled = false;
+      } )
+    }
   },
+  components: {
+    Message,
+    Toast
+  },
+ watch: {
+    '$route.fullPath'(newPath) {
+      if (newPath.includes('newOrders')) {
+        this.status = 'pending';
+        this.getOrders()
+      } else if (newPath.includes('activeOrders')) {
+        this.status = 'inprogress';
+        this.getOrders()
+      } else if (newPath.includes('completeOrders')) {
+        this.status = 'finished';
+        this.getOrders()
+      }
+    }
+  },
+  mounted() {
+    this.getOrders();
+  }
 };
 </script>
 

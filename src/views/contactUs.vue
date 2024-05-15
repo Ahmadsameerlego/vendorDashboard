@@ -9,7 +9,7 @@
       </div>
     </div>
 
-    <form id="form">
+    <form id="form" ref="contactUsForm" @submit.prevent="contactUs">
       <div class="white-bg round7 mb-3 mt-2 p-3">
         <h6 class="bold border-bottom pt-3 pb-3 mb-4">تواصل معنا</h6>
 
@@ -24,6 +24,8 @@
               id="exampleInputEmail1"
               aria-describedby="emailHelp"
               placeholder="الرجاء ادخال عنوان الرسالة"
+              name="title"
+              v-model="title"
             />
           </div>
 
@@ -37,27 +39,60 @@
               class="form-control"
               id="exampleInputEmail1"
               placeholder=" الرجاء ادخال رسالتك "
+              name="message"
+              v-model="message"
             ></textarea>
           </div>
         </div>
       </div>
 
-      <button class="button1 mt-3 material-button">ارسال الرسالة</button>
+      <button class="button1 mt-3 material-button" :disabled="disabled">ارسال الرسالة</button>
     </form>
   </div>
+  <Toast />
 </template>
 
 <script>
+import axios from 'axios';
+import Toast from 'primevue/toast';
+
 export default {
   name: "VendorDashboardContactUs",
 
   data() {
-    return {};
+    return {
+      disabled: false,
+      title: '',
+      message : ''
+    };
   },
 
   mounted() {},
 
-  methods: {},
+  methods: {
+    async contactUs() {
+      this.disabled = true;
+       const token = localStorage.getItem('token');  
+        const headers = {
+          Authorization: `Bearer ${token}`,
+      };
+      const fd = new FormData(this.$refs.contactUsForm)
+      await axios.post('store/contact-us', fd, {headers})
+        .then((res) => {
+          if (res.data.key == 'success') {
+            this.$toast.add({ severity: 'success', summary: res.data.msg, life: 4000 });
+            this.title = '';
+            this.message = ''
+          } else {
+          this.$toast.add({ severity: 'error', summary: res.data.msg, life: 4000 });
+          }
+        this.disabled = false;
+      } )
+    }
+  },
+  components: {
+    Toast
+  }
 };
 </script>
 

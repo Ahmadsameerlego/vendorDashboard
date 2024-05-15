@@ -11,7 +11,7 @@
       <h6 class="bold">بيانات طلب اعلان</h6>
       <hr />
 
-      <form action="payment-method.html" style="width: 60%">
+      <form @submit.prevent="postAdd" ref="addPost" style="width: 60%">
         <div class="form-group">
           <label class="bold font14" for="name-ar"> مدة الاعلان بالايام </label>
           <div class="password-cont">
@@ -20,6 +20,7 @@
               class="form-control"
               aria-describedby="emailHelp"
               placeholder="الرجاء ادخال مدة الاعلان بالايام"
+              name="period"
             />
             <span class="with-days">بالايم</span>
           </div>
@@ -27,59 +28,99 @@
 
         <h5>
           <span class="text-muted">السعر</span>
-          <span class="bold color1">500 ر.س</span>
+          <span class="bold color1">{{  price  }} ر.س</span>
         </h5>
 
+                  <label class="bold font14 d-block mt-5" for="name-ar"> صورة الاعلان </label>
+
         <!-- image preview -->
-        <div class="d-flex flex-wrap parent-img">
-          <div class="drop-box mr-2 ml-2">
-            <div class="text-center m-2 box-up">
-              <div class="images-upload-block">
-                <label class="upload-img">
-                  <span class="d-flex flex-column">
-                    <i class="fas fa-cloud-upload-alt color1"></i>
-                    <h6 class="">ارفاق صورة الاعلان</h6>
-                  </span>
+        <label for="file1">
+                  <div class="input-img-cont">
+                    <img
+                      src="@/assets/imgs/icons/upload-img.png"
+                      id="view1"
+                      class="input-img"
+                      alt=""
+                    />
+                    <img
+                      src="@/assets/imgs/icons/camera.png"
+                      class="input-img-camera"
+                      alt=""
+                    />
+                  </div>
                   <input
+                    onchange="viewImg(event ,'#view1')"
+                    class="d-none"
                     type="file"
-                    accept="image/*"
-                    class="form-control image-uploader"
-                    name="imageArr[]"
-                    required=""
-                    multiple
+                    name="files[]"
+                    id="file1"
                   />
                 </label>
-              </div>
-            </div>
-          </div>
-          <div
-            class="d-flex align-items-center justify-content-center position-relative"
-          >
-            <button class="click_event m-2">
-              <span class="plus"><i class="fa fa-plus-square"></i></span>
-            </button>
-          </div>
-        </div>
 
-        <div class="d-flex align-items-baseline">
-          <button class="button1 mt-3 material-button">اختر طريقة الدفع</button>
+        <div class="d-flex align-items-baseline justify-content-center">
+          <button class="button1 mt-3 material-button px-5" :disabled="disabled">رفع الاعلان</button>
         </div>
       </form>
     </section>
   </div>
+  <Toast />
 </template>
 
 <script>
+import axios from 'axios';
+import Toast from 'primevue/toast';
+
 export default {
   name: "VendorDashboardAddAdvertisement",
 
   data() {
-    return {};
+    return {
+      price: '',
+      disabled : false
+    };
   },
 
-  mounted() {},
+  mounted() {
+    this.getAddPrice();
+  },
+  components: {
+    Toast
+  },
+  methods: {
+    async getAddPrice() {
+      const token = localStorage.getItem('token');  
+        const headers = {
+          Authorization: `Bearer ${token}`,
+        };
+      await axios.get('store/get-ad-price', { headers })
+        .then((res) => {
+          this.price = res.data.data.ad_price;
+      } )
+    },
+    async postAdd() {
+      this.disabled = true;
+        const token = localStorage.getItem('token');  
+        const headers = {
+          Authorization: `Bearer ${token}`,
+          lang : 'ar'
+        };
 
-  methods: {},
+      const fd = new FormData(this.$refs.addPost)
+      fd.append('payment_type', 2)
+      await axios.post('store/post-ad-request', fd, { headers })
+      .then((res) => {
+          if (res.data.key == 'success') {
+            this.$toast.add({ severity: 'success', summary: res.data.msg, life: 4000 });
+            setTimeout(() => {
+              this.$router.push('/')
+            }, 2000);
+          } else {
+          this.$toast.add({ severity: 'error', summary: res.data.msg, life: 4000 });
+          }
+        this.disabled = false;
+      } )
+    }
+  },
 };
 </script>
 

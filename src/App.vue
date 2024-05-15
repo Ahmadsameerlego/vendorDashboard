@@ -33,6 +33,31 @@ export default {
       console.log("tag", "rfrfrfrf");
     }
   },
+  mounted() {
+   setTimeout(() => {
+     document.querySelectorAll('.dataTables_empty').forEach((el) => {
+      el.parentElement.remove();
+      console.log(document.querySelectorAll('.dataTables_empty'))
+    } )
+   }, 1000);
+  },
+  updated() {
+     setTimeout(() => {
+     document.querySelectorAll('.dataTables_empty').forEach((el) => {
+      el.parentElement.remove();
+      console.log(document.querySelectorAll('.dataTables_empty'))
+    } )
+   }, 1000);
+  }
 };
 </script>
-<style lang="scss"></style>
+<style lang="scss">
+.p-message-text.p-message-text{
+  font-family: "Cairo", sans-serif !important;
+}
+.p-message-wrapper{
+  display: flex !important;
+  justify-content: space-between !important;
+  padding: 5px 10px !important;
+}
+</style>

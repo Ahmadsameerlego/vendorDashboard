@@ -21,14 +21,23 @@ import "primevue/resources/primevue.min.css";
 import ToastService from "primevue/toastservice";
 
 import axios from "axios";
-axios.defaults.baseURL = "http://cofferkies.trysnapus.com/api/";
-// axios.defaults.headers.common['Authorization'] = localStorage.getItem('token');
+axios.defaults.baseURL = "https://cofferkies.super-coding.com/api/";
+axios.defaults.headers.common["Accept"] = "application/json";
 // axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded';
 axios.defaults.headers.lang = localStorage.getItem("locale");
+
+import VueGoogleMaps from "@fawmi/vue-google-maps";
+
 
 createApp(App)
   .use(store)
   .use(router)
   .use(PrimeVue)
   .use(ToastService)
+  .use(VueGoogleMaps, {
+    load: {
+      key: "AIzaSyBzyIm5j_8mK6y2CoOkrYA5VdZma3Sulsc",
+      libraries: "places",
+    },
+  })
   .mount("#app");

@@ -1,39 +1,10 @@
 <template>
-  <div class="background">
-    <img src="@/assets/imgs/bg/header.svg" alt="" />
-  </div>
+
 
   <!-- start page content -->
 
   <div class="page-content">
-    <div class="mt-4 mb-3 text-center">
-      <h5 class="bold">انشاء حساب جديد</h5>
-      <p class="m-3">من اجل تسجيل متجرك يرجى ادخال البيانات التالية</p>
-    </div>
 
-    <div class=" m-auto round10 p-3 pl-4 pr-4 form-cont">
-      <div class="container register-header m-auto">
-        <div class="active">
-          <span class="select-register-step">1</span>
-          <span class="font16 bold"> البيانات الاساسية </span>
-        </div>
-        <div class="line-between"></div>
-        <div class="current active">
-          <span class="select-register-step">2</span>
-          <span class="font16 bold"> بيانات المتجر </span>
-        </div>
-        <div class="line-between"></div>
-        <div class="current">
-          <span class="select-register-step">3</span>
-          <span class="font16 bold"> اوقات العمل </span>
-        </div>
-        <div class="line-between"></div>
-        <div class="current">
-          <span class="select-register-step">4</span>
-          <span class="font16 bold"> البيانات البنكية </span>
-        </div>
-      </div>
-    </div>
 
     <div class=" m-auto round10 p-3 form-cont">
       <form ref="storeData" @submit.prevent="register" class="container">
