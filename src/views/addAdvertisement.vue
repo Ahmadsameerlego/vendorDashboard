@@ -52,7 +52,7 @@
                     onchange="viewImg(event ,'#view1')"
                     class="d-none"
                     type="file"
-                    name="files[]"
+                    name="image"
                     id="file1"
                   />
                 </label>

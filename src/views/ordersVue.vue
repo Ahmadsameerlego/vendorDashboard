@@ -19,6 +19,9 @@
                 id="dataTableSearchInput1"
                 aria-describedby="emailHelp"
                 placeholder="كلمات مفتاحية"
+                                v-model="name"
+                @input="getFilteredData()"
+
               />
               <i class="fa fa-search color-gray"></i>
             </div>
@@ -28,9 +31,11 @@
                 name=""
                 id=""
                 style="width: 70px; height: 38px !important"
+                 v-model="date"
+                @change="getOrders()"
               >
-                <option value="" selected>الاقدم</option>
-                <option value="">الاحدث</option>
+                <option value="old" selected>الاقدم</option>
+                <option value="recent">الاحدث</option>
               </select>
             </div>
           </div>
@@ -76,15 +81,15 @@
                 <ul class="white-bg round7 pt-1 pb-1 shadow1">
                   <li>
                     <router-link :to="'/orderDetails/'+order.id"
-                      ><i class="fa fa-eye color1"></i> التفاصيل</router-link>
+                      ><i class="fa fa-edit color1"></i> التفاصيل</router-link>
                   </li>
                   <li class="border-bottom"></li>
-                  <li>
+                  <li v-if="order.payment_status !== 'true'">
                     <button class="btn" @click="accept(order.id)"><i class="fa fa-check color1"></i> قبول</button>
                   </li>
                   <li class="border-bottom"></li>
-                  <li>
-                    <button class="btn" @click="refuse(order.id)"><i class="fa fa-check color1"></i> رفض</button>
+                  <li v-if="order.payment_status !== 'true'">
+                    <button class="btn btn-danger" @click="refuse(order.id)"> رفض</button>
                   </li>
                 </ul>
               </div>
@@ -115,19 +120,29 @@ export default {
     return {
       showMenue: [],
       status: 'pending',
-      orders : []
+      orders: [],
+       name: '',
+      date : ''
     };
   },
   methods: {
-    showTableMenu(index) {
-      this.showMenue[index] = !this.showMenue[index];
+     getFilteredData() {
+      this.getOrders();
+    },
+     showTableMenu(index) {
+      // Initialize the showMenue array with false values if not already initialized
+      if (this.showMenue.length !== this.orders.length) {
+        this.showMenue = Array(this.orders.length).fill(false);
+      }
+      // Close all other menus and toggle the current menu
+      this.showMenue = this.showMenue.map((_, i) => i === index ? !this.showMenue[i] : false);
     },
     async getOrders() {
       const token = localStorage.getItem('token');  
         const headers = {
           Authorization: `Bearer ${token}`,
         };
-      await axios.get(`store/get-orders?status=${this.status}`, { headers })
+      await axios.get(`store/get-orders?status=${this.status}&search=${this.name}&date=${this.date}`, { headers })
         .then((res) => {
           this.orders = res.data.data.orders;
       } )
@@ -180,18 +195,18 @@ export default {
     Toast
   },
  watch: {
-    '$route.fullPath'(newPath) {
-      if (newPath.includes('newOrders')) {
-        this.status = 'pending';
-        this.getOrders()
-      } else if (newPath.includes('activeOrders')) {
-        this.status = 'inprogress';
-        this.getOrders()
-      } else if (newPath.includes('completeOrders')) {
-        this.status = 'finished';
-        this.getOrders()
-      }
-    }
+    // '$route.fullPath'(newPath) {
+    //   if (newPath.includes('newOrders')) {
+    //     this.status = 'pending';
+    //     this.getOrders()
+    //   } else if (newPath.includes('activeOrders')) {
+    //     this.status = 'inprogress';
+    //     this.getOrders()
+    //   } else if (newPath.includes('completeOrders')) {
+    //     this.status = 'finished';
+    //     this.getOrders()
+    //   }
+    // }
   },
   mounted() {
     this.getOrders();

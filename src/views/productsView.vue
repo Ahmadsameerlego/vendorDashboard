@@ -90,7 +90,7 @@
                   </li>
                   <li class="border-bottom"></li>
                   <li>
-                    <button class="cp" @click.prevent="deleteProduct(product.id)"
+                    <button class="btn cp" @click.prevent="deleteProduct(product.id)"
                       ><i class="far fa-trash-alt color-red"></i> حذف</button
                     >
                   </li>
@@ -122,7 +122,12 @@ export default {
   },
   methods: {
     openTableMenu(index) {
-      this.showMenue[index] = !this.showMenue[index];
+            // Initialize the showMenue array with false values if not already initialized
+      if (this.showMenue.length !== this.products.length) {
+        this.showMenue = Array(this.products.length).fill(false);
+      }
+      // Close all other menus and toggle the current menu
+      this.showMenue = this.showMenue.map((_, i) => i === index ? !this.showMenue[i] : false);
       // this.showMenue.forEach((el)=> el != index ? el = false  : true );
     },
     getFilteredData() {

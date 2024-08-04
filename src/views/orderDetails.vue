@@ -14,7 +14,7 @@
 
     <div class="m-auto round10 p-3 pl-4 pr-4 form-cont">
       <div class="container register-header m-auto">
-        <div :class="{current : status == 'pending' ||status == 'inprogress'||status == 'finished'}">
+        <div :class="{current : status == 'pending' ||status == 'waiting_payment'||status == 'inprogress'||status == 'finished'}">
           <span class="select-register-step step">1</span>
           <span class="select-register-step check"
             ><i class="fa fa-check"></i
@@ -22,12 +22,12 @@
           <span class="font12 bold"> قيد الموافقة </span>
         </div>
         <div class="line-between"></div>
-        <div :class="{current : status == 'inprogress'||status == 'finished'}">
+        <div :class="{current : status == 'inprogress'|| status == 'waiting_payment'||status == 'finished'}">
           <span class="select-register-step step">2</span>
           <span class="select-register-step check"
             ><i class="fa fa-check"></i
           ></span>
-          <span class="font12 bold"> تم تجهيز الطلب </span>
+          <span class="font12 bold"> في انتظار الدفع </span>
         </div>
 
         <div class="line-between"></div>

@@ -76,6 +76,19 @@
           >
         </li>
 
+          <li class="nav-item">
+          <a
+            class="nav-link"
+            id="reserve-tab"
+            data-toggle="pill"
+            href="#reserve"
+            role="tab"
+            aria-controls="reserve"
+            aria-selected="false"
+            >الحجوزات</a
+          >
+        </li>
+
         <li class="nav-item"></li>
       </ul>
       <!-- end tabs header -->
@@ -534,6 +547,17 @@
             </select>
         </div>
 
+        <div class="form-group">
+          <label class="bold font14" for="exampleInputEmail1">
+            الدولة
+            <span style="color: #ff3333; margin: auto 20px"> * </span></label
+          >
+            <select name="" v-model="country_id" id="" class="form-control" @change="getCitiesFromID">
+              <option value="" selected disabled hidden> {{ country_name }} </option>
+              <option :value="value.id" v-for="value in countries" :key="value.id"> {{ value.name}}</option>
+            </select>
+        </div>
+
          <div class="form-group">
           <label class="bold font14" for="exampleInputEmail1">
             المدينة
@@ -985,6 +1009,35 @@
       </form>
     </div>
         </div>
+
+         <!-- البيانات البنكية -->
+        <div
+          class="tab-pane fade"
+          id="reserve"
+          role="tabpanel"
+          aria-labelledby="reserve-tab"
+        >
+          <div class="m-auto round10 p-3 pl-4 pr-4 form-cont">
+      <form ref="bankData" @submit.prevent="StoreBank">
+        <div class="">
+        <h6 class="bold border-bottom pt-3 pb-3 mb-3">يمكنك فتح وغلق الحجوزات من هنا</h6>
+<div
+                      class="item d-flex justify-content-between align-items-baseline"
+                    >
+                      <label class="switch mt-4">
+                        <input type="checkbox" v-model="reserveStatus" @change="changeStatus" />
+                        <span class="slider round"></span>
+                      </label>
+
+                     
+                    </div>
+        
+      </div>
+
+     
+      </form>
+    </div>
+        </div>
       </div>
       <!-- end tabs header -->
     </div>
@@ -1011,13 +1064,16 @@ export default {
       phone: '',
       country_key: '',
       identity_number: '',
+      reserveStatus : null ,
        locations:
       {
           lat: 0,
           lng: 0
       },
       address: '',
-      countries : [],
+      countries: [],
+      country_name: '',
+      country_id : '',
       categories: [],
       selectedCategories: [],
       cover: '',
@@ -1088,6 +1144,25 @@ export default {
   },
 
   methods: {
+
+   async changeStatus() {
+       const token = localStorage.getItem('token');  
+        const headers = {
+          Authorization: `Bearer ${token}`,
+        };
+
+      const fd = new FormData()
+       
+      await axios.post('store/switch-reservation', fd, {headers})
+        .then((res) => {
+          if (res.data.key == 'success') {
+            this.$toast.add({ severity: 'success', summary: 'تم التغيير بنجاح', life: 4000 });
+           
+          } else {
+          this.$toast.add({ severity: 'error', summary: res.data.msg, life: 4000 });
+          }
+      } )
+    },
     // ger added_values 
     async getAddedValues() {
       await axios.get('added-values')
@@ -1128,6 +1203,8 @@ export default {
           this.locations.lat = user.address_data.lat;
           this.address = user.address_data.address;
           this.apiTimes = user.times;
+          this.country_name = user.country.name;
+          this.country_id = user.country.id;
           console.log(this.apiTimes)
         // Map API data to component data properties
       this.apiTimes.forEach(time => {
@@ -1281,6 +1358,7 @@ export default {
       fd.append('address', this.address)
       fd.append('lat', this.locations.lat)
       fd.append('long', this.locations.lng)
+      fd.append('country_id', this.country_id)
 
       fd.append('commercial_expired', moment(this.expired_date).format('YYYY-MM-DD'))
       fd.append('added_value', this.added_value)
@@ -1377,6 +1455,15 @@ export default {
         this.bankLoad = true;
       } )
     }, 
+
+
+    
+  convertTo12Hour(time) {
+  const [hour, minute] = time.split(':');
+  const ampm = hour >= 12 ? 'PM' : 'AM';
+  const hour12 = hour % 12 || 12; // Convert '0' hour to '12'
+  return `${hour12}:${minute} ${ampm}`;
+},
   },
   
   mounted() {
@@ -1431,14 +1518,13 @@ export default {
   computed: {
     times() {
       return [
-        
-        this.satFrom !== null && this.satTo != null ? { day: "saturday", from: this.satFrom, to: this.satTo } : undefined,       
-        this.sunFrom !== null && this.sunTo != null ?  {day: "sunday" ,from: this.sunFrom,to : this.sunTo} : undefined ,        
-        this.monFrom !== null && this.monTo != null ?  {day: "Monday" ,from: this.monFrom,to : this.monTo} : undefined ,        
-        this.tueFrom !== null && this.tueTo != null ?  {day: "Tuesday" ,from: this.tueFrom,to : this.tueTo} : undefined ,        
-        this.wedFrom !== null && this.wedTo != null ?  {day: "Wednesday" ,from: this.wedFrom,to : this.wedTo} : undefined ,        
-        this.thFrom !== null && this.thTo != null ?  {day: "Thursday" ,from: this.thFrom,to : this.thTo} : undefined ,        
-        this.friFrom !== null && this.friTo != null ?  {day: "Friday" ,from: this.friFrom,to : this.friTo} : undefined ,        
+         this.satFrom !== null && this.satTo != null ? { day: "saturday", from: this.convertTo12Hour(this.satFrom), to: this.convertTo12Hour(this.satTo )} : undefined,       
+          this.sunFrom !== null && this.sunTo != null ?  {day: "sunday" ,from: this.convertTo12Hour(this.sunFrom),to : this.convertTo12Hour(this.sunTo)} : undefined ,        
+          this.monFrom !== null && this.monTo != null ?  {day: "Monday" ,from: this.convertTo12Hour(this.monFrom),to : this.convertTo12Hour(this.monTo)} : undefined ,        
+          this.tueFrom !== null && this.tueTo != null ?  {day: "Tuesday" ,from: this.convertTo12Hour(this.tueFrom),to : this.convertTo12Hour(this.tueTo)} : undefined ,        
+          this.wedFrom !== null && this.wedTo != null ?  {day: "Wednesday" ,from: this.convertTo12Hour(this.wedFrom),to : this.convertTo12Hour(this.wedTo)} : undefined ,        
+          this.thFrom !== null && this.thTo != null ?  {day: "Thursday" ,from: this.convertTo12Hour(this.thFrom),to : this.convertTo12Hour(this.thTo)} : undefined ,        
+          this.friFrom !== null && this.friTo != null ?  {day: "Friday" ,from: this.convertTo12Hour(this.friFrom),to : this.convertTo12Hour(this.friTo)} : undefined ,        
        
       ]
     }

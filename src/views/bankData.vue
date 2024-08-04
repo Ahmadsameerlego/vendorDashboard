@@ -197,7 +197,7 @@ export default {
             localStorage.setItem('user', JSON.stringify(res.data.data))
             localStorage.setItem('token', res.data.data.token)
           setTimeout(() => {
-            this.$router.push('/')
+            this.$router.push('/login')
           }, 2000);
           } else {
           this.$toast.add({ severity: 'error', summary: res.data.msg, life: 4000 });

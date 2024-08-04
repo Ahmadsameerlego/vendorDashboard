@@ -21,10 +21,10 @@ import "primevue/resources/primevue.min.css";
 import ToastService from "primevue/toastservice";
 
 import axios from "axios";
-axios.defaults.baseURL = "https://cofferkies.super-coding.com/api/";
+axios.defaults.baseURL = "https://coffeekies.trysnapus.com/api/";
 axios.defaults.headers.common["Accept"] = "application/json";
 // axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded';
-axios.defaults.headers.lang = localStorage.getItem("locale");
+axios.defaults.headers.lang = 'ar'
 
 import VueGoogleMaps from "@fawmi/vue-google-maps";
 

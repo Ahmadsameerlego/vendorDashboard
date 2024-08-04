@@ -4,7 +4,7 @@
       <div class="dash-title col-md p-0 mt-0">
         <h6 class="bold">إضافة منتج جديد</h6>
         <p class="mb-1">
-          فروع المطعم / <span class="color2">إضافة منتج جديد</span>
+          المنتجات / <span class="color2">إضافة منتج جديد</span>
         </p>
       </div>
     </div>
@@ -82,7 +82,9 @@
             >
             <select class="form-control" name="menu_id">
               <option selected disabled hidden>اختر القسم</option>
-              <option v-for="cat in cats" :key="cat.id" :value="cat.id"> {{cat.name_ar}} </option>
+              <option v-for="cat in cats" :key="cat.id" :value="cat.id">
+                {{ cat.name_ar }}
+              </option>
             </select>
           </div>
 
@@ -125,7 +127,7 @@
           :key="index"
         >
           <div class="d-flex align-items-center">
-           <div class="mb-2 w-50 ">
+            <div class="mb-2 w-50">
               <label for=""> حجم {{ index + 1 }} </label>
               <input
                 type="text"
@@ -141,7 +143,6 @@
                 placeholder="الرجاء ادخال سعر الحجم"
                 class="form-control"
                 v-model="size.price"
-                
               />
             </div>
             <div class="mb-2 w-50 mx-3">
@@ -209,21 +210,20 @@
 </template>
 
 <script>
-import axios from 'axios';
-import Toast from 'primevue/toast';
+import axios from "axios";
+import Toast from "primevue/toast";
 
 export default {
   name: "VendorDashboardAddProduct",
 
   data() {
     return {
-      features: [{
-      }],
+      features: [{}],
       sizes: [{}],
       cats: [],
       disabled: false,
-      add_price: '',
-      add_name : ''
+      add_price: "",
+      add_name: "",
     };
   },
 
@@ -234,62 +234,68 @@ export default {
   methods: {
     addFeature() {
       this.features.push({
-        name:'' ,
-        price : ''
+        name: "",
+        price: "",
       });
-      console.log(JSON.stringify(this.features))
+      console.log(JSON.stringify(this.features));
     },
     deleteFeature(index) {
       this.features.splice(index, 1);
     },
     addSize() {
       this.sizes.push({
-        size: '',
-        price: '',
-        price_discount: ''
+        size: "",
+        price: "",
+        price_discount: "",
       });
     },
     deleteSize(index) {
       this.sizes.splice(index, 1);
     },
     async getStoreCategories() {
-       const token = localStorage.getItem('token');  
-        const headers = {
-          Authorization: `Bearer ${token}`,
-          lang: 'ar'
-        };
-      await axios.get('store/menus', { headers })
-        .then((res) => {
-          this.cats = res.data.data;
-      } )
+      const token = localStorage.getItem("token");
+      const headers = {
+        Authorization: `Bearer ${token}`,
+        lang: "ar",
+      };
+      await axios.get("store/menus", { headers }).then((res) => {
+        this.cats = res.data.data;
+      });
     },
     async addProduct() {
       this.disabled = true;
-       const token = localStorage.getItem('token');  
-        const headers = {
-          Authorization: `Bearer ${token}`,
-        };
+      const token = localStorage.getItem("token");
+      const headers = {
+        Authorization: `Bearer ${token}`,
+      };
 
-      const fd = new FormData(this.$refs.addProductsForm)
-        fd.append('additives', JSON.stringify(this.features))
-        fd.append('sizes', JSON.stringify(this.sizes))
-      await axios.post('store/add-product', fd, {headers})
-        .then((res) => {
-          if (res.data.key == 'success') {
-            this.$toast.add({ severity: 'success', summary: res.data.msg, life: 4000 });
-            setTimeout(() => {
-              this.$router.push('/products')
-            }, 2000);
-          } else {
-          this.$toast.add({ severity: 'error', summary: res.data.msg, life: 4000 });
-          }
+      const fd = new FormData(this.$refs.addProductsForm);
+      fd.append("additives", JSON.stringify(this.features));
+      fd.append("sizes", JSON.stringify(this.sizes));
+      await axios.post("store/add-product", fd, { headers }).then((res) => {
+        if (res.data.key == "success") {
+          this.$toast.add({
+            severity: "success",
+            summary: res.data.msg,
+            life: 4000,
+          });
+          setTimeout(() => {
+            this.$router.push("/products");
+          }, 2000);
+        } else {
+          this.$toast.add({
+            severity: "error",
+            summary: res.data.msg,
+            life: 4000,
+          });
+        }
         this.disabled = false;
-      } )
-    }
+      });
+    },
   },
   components: {
-    Toast
-  }
+    Toast,
+  },
 };
 </script>
 

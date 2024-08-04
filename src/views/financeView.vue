@@ -68,7 +68,7 @@
         </thead>
         <tbody data-class-name="table-body">
           <tr v-for="(fin, index) in finance" :key="fin.id">
-            <td> {{  index  }} </td>
+            <td> {{  index + 1  }} </td>
             <td> {{  fin.id  }} </td>
             <td> {{ fin.receive_method }} </td>
             <td> {{ fin.settlement_value }}  ريال</td>
@@ -114,7 +114,12 @@ export default {
 
   methods: {
     openTableMenu(index) {
-      this.showTableActions[index] = !this.showTableActions[index];
+          // Initialize the showMenue array with false values if not already initialized
+      if (this.showTableActions.length !== this.finance.length) {
+        this.showTableActions = Array(this.finance.length).fill(false);
+      }
+      // Close all other menus and toggle the current menu
+      this.showTableActions = this.showTableActions.map((_, i) => i === index ? !this.showTableActions[i] : false);
     },
       async getAddPrice() {
       const token = localStorage.getItem('token');  

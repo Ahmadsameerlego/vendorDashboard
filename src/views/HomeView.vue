@@ -1,7 +1,26 @@
 <template>
+
+  <div class="subscribe_alerts d-flex justify-content-between align-items-center">
+    <div class="text">
+          <img
+            class="icon-img"
+            src="@/assets/imgs/icons/dash1 (1).svg"
+            alt=""
+          />
+          
+
+      تم انتهاء وقت الباقة الخاصة بك
+    </div>
+
+    <div>
+      <router-link to="/plans">
+        تجديد
+      </router-link>
+    </div>
+  </div>
   <div class="dash-title p-2">
     <h6 class="bold">لوحة التحكم</h6>
-    <p class="mb-1">مرحبا بك أحمد سمير , اهلا بعودتك</p>
+    <p class="mb-1">مرحبا بك {{ user_name }}  , اهلا بعودتك</p>
   </div>
 
   <div class="row">
@@ -87,6 +106,14 @@
    <div class="card">
         <Chart type="line" :data="chartData" :options="chartOptions" class="h-30rem" style="height:300px" />
     </div>
+  <div class="dash-title p-2 mt-4">
+    <h6 class="bold">الحجوزات</h6>
+    <p class="mb-1">اختر اليوم لترى حجوزات اليوم</p>
+  </div>
+
+   <div class="card">
+<Calendar v-model="date" inline showWeek />
+    </div>
 
 
   <div class="table-cont p-2">
@@ -118,7 +145,7 @@
         </tr>
       </thead>
       <tbody data-class-name="table-body">
-        <tr v-for="order in new_orders" :key="order.id">
+        <tr v-for="(order, index) in new_orders" :key="order.id">
           <td>1</td>
           <td> {{  order.order_num  }} </td>
           <td> {{  order.user_name  }} </td>
@@ -132,19 +159,16 @@
             <div class="menu-cont" v-if="showMenue[index]">
                 <ul class="white-bg round7 pt-1 pb-1 shadow1">
                   <li>
-                    <router-link to="/orderDetails/1"
-                      ><i class="fa fa-eye color1"></i> التفاصيل</router-link
-                    >
+                    <router-link :to="'/orderDetails/'+order.id"
+                      ><i class="fa fa-edit color1"></i> التفاصيل</router-link>
                   </li>
                   <li class="border-bottom"></li>
-                  <li>
-                    <a href="#"><i class="fa fa-check color1"></i> قبول</a>
+                  <li v-if="order.payment_status !== 'true'">
+                    <button class="btn" @click="accept(order.id)"><i class="fa fa-check color1"></i> قبول</button>
                   </li>
                   <li class="border-bottom"></li>
-                  <li>
-                    <a onclick="deleteElement()" href="#"
-                      ><i class="far fa-trash-alt color-red"></i> حذف</a
-                    >
+                  <li v-if="order.payment_status !== 'true'">
+                    <button class="btn btn-danger" @click="refuse(order.id)"> رفض</button>
                   </li>
                 </ul>
             </div>
@@ -153,17 +177,24 @@
       </tbody>
     </table>
   </div>
+  <Toast />
 </template>
+
+
 
 <script>
 // @ is an alias to /src
 import axios from 'axios';
 import Chart from 'primevue/chart';
+import Toast from 'primevue/toast';
+import Calendar from 'primevue/calendar';
 
 export default {
   name: "HomeView",
   components: {
-    Chart
+    Chart,
+    Toast,
+    Calendar
   },
   data() {
     return {
@@ -171,12 +202,21 @@ export default {
       home: {},
       new_orders: [],
       chartData: null,
-            chartOptions: null
+      chartOptions: null,
+      user: {},
+      user_name: '',
+            date : ''
     };
   },
+  
   methods: {
     showTableMenu(index) {
-      this.showMenue[index] = !this.showMenue[index]
+      // Initialize the showMenue array with false values if not already initialized
+      if (this.showMenue.length !== this.new_orders.length) {
+        this.showMenue = Array(this.new_orders.length).fill(false);
+      }
+      // Close all other menus and toggle the current menu
+      this.showMenue = this.showMenue.map((_, i) => i === index ? !this.showMenue[i] : false);
     },
     getData() {
     return new Promise((resolve, reject) => {
@@ -192,13 +232,56 @@ export default {
                     this.new_orders = res.data.data.new_orders;
                     resolve(res.data); // Resolve with the response data
                 } else {
-                    reject(new Error("Request was not successful")); // Reject if the response key is not "success"
+                  reject(new Error("Request was not successful")); 
+                    localStorage.setItem('auth', true)
                 }
             })
             .catch(error => {
                 reject(error); // Reject with the caught error
             });
     });
+    },
+    // accept order 
+     async accept(id) {
+        const token = localStorage.getItem('token');  
+        const headers = {
+          Authorization: `Bearer ${token}`,
+          lang : 'ar'
+        };
+
+      await axios.get(`store/accept-order?order_id=${id}`, { headers })
+      .then((res) => {
+          if (res.data.key == 'success') {
+            this.$toast.add({ severity: 'success', summary: res.data.msg, life: 4000 });
+            setTimeout(() => {
+              this.getData();
+            }, 2000);
+          } else {
+          this.$toast.add({ severity: 'error', summary: res.data.msg, life: 4000 });
+          }
+        this.disabled = false;
+      } )
+    },
+    // accept order 
+     async refuse(id) {
+        const token = localStorage.getItem('token');  
+        const headers = {
+          Authorization: `Bearer ${token}`,
+          lang : 'ar'
+        };
+
+      await axios.get(`store/refuse-order?order_id=${id}`, { headers })
+      .then((res) => {
+          if (res.data.key == 'success') {
+            this.$toast.add({ severity: 'success', summary: res.data.msg, life: 4000 });
+            setTimeout(() => {
+              this.getData();
+            }, 2000);
+          } else {
+          this.$toast.add({ severity: 'error', summary: res.data.msg, life: 4000 });
+          }
+        this.disabled = false;
+      } )
     },
 
 
@@ -261,7 +344,32 @@ export default {
     this.getData()
             this.chartData = this.setChartData();
         this.chartOptions = this.setChartOptions();
-
+    if (localStorage.getItem('user')) {
+      this.user_name = JSON.parse(localStorage.getItem('user')).name
+    }
   }
 };
 </script>
+
+
+
+<style lang="scss">
+.p-datepicker-next , .p-datepicker-prev{
+  transform : rotate(180deg)
+}
+.subscribe_alerts{
+      background: #d42c2c;
+    border-radius: 10px;
+    padding: 10px;
+    color: #fff;
+    a{
+    color: #744c21;
+    background: #f0f0f0;
+    border-radius: 6px;
+    padding: 3px 20px;
+    &:hover{
+      color:#744c21 !important ;
+    }
+    }
+}
+</style>

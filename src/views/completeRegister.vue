@@ -37,7 +37,12 @@
 
     <div class=" m-auto round10 p-3 form-cont">
       <form ref="storeData" @submit.prevent="register" class="container">
-        <h6 class="bold border-bottom pt-3 pb-3 mb-4">بيانات المتجر</h6>
+        <h6 class="bold border-bottom pt-3 pb-3 mb-4">
+          <span>بيانات المتجر</span>
+                                          <span style="color: #ff3333; margin: auto 20px;font-weight:normal">برجاء رفع صور وملفات بأحجام صغيرة </span>
+
+        </h6>
+
 
         <div class="form-group">
           <div class="row align-items-center justify-content-start">
@@ -105,7 +110,9 @@
         <div class="form-group">
           <label class="bold font14" for="exampleInputEmail1">
             رقم الهاتف
-            <span style="color: #ff3333; margin: auto 20px"> * </span></label
+            <span style="color: #ff3333; margin: auto 20px"> * </span>
+            <span style="color: #ff3333; margin: auto 20px;font-weight:normal"> رقم الهاتف يجب ان يكون من 9 : 10 ارقام </span>
+            </label
           >
           <div class="row">
             <div class="col-4 col-md-2 p-1 pr-0">
@@ -186,7 +193,10 @@
         <div class="form-group">
           <label class="bold font14" for="exampleInputEmail1">
             تحديد نوع المحل
-            <span style="color: #ff3333; margin: auto 20px"> * </span></label
+            <span style="color: #ff3333; margin: auto 20px"> * </span>
+            <span style="color: #ff3333; margin: auto 20px;font-weight:normal"> اختر نوع او اكثر </span>
+
+            </label
           >
           <div>
             <MultiSelect v-model="selectedCategories" :options="categories" optionLabel="name" placeholder="اختر نوع المحل"
@@ -198,7 +208,11 @@
         <div class="form-group">
           <label class="bold font14" for="exampleInputEmail1">
             رقم السجل التجاري
-            <span style="color: #ff3333; margin: auto 20px"> * </span></label
+            <span style="color: #ff3333; margin: auto 20px"> * </span>
+
+                        <span style="color: #ff3333; margin: auto 20px;font-weight:normal">رقم السجل يجب ان يكون من 10:24 رقم </span>
+
+            </label
           >
           <input
             type="text"
@@ -226,7 +240,11 @@
 <div class="form-group">
           <label class="bold font14" for="exampleInputEmail1">
             تاريخ الانتهاء
-            <span style="color: #ff3333; margin: auto 20px"> * </span></label
+            <span style="color: #ff3333; margin: auto 20px"> * </span>
+
+                                    <span style="color: #ff3333; margin: auto 20px;font-weight:normal">تاريخ الانتهاء يجب ان يكون لاحقا لتاريخ اليوم </span>
+
+            </label
           >
           <!-- <input
             type="date"
@@ -276,7 +294,10 @@
         <div class="form-group">
           <label class="bold font14" for="exampleInputEmail1">
             الرقم الضريبي
-            <span style="color: #ff3333; margin: auto 20px"> * </span></label
+            <span style="color: #ff3333; margin: auto 20px"> * </span>
+                                    <span style="color: #ff3333; margin: auto 20px;font-weight:normal">الرقم الضريبي يجب ان يكون اكثر من 10 ارقام </span>
+
+            </label
           >
           <input
             type="number"
@@ -325,8 +346,19 @@
             القيمة المضافة
             <span style="color: #ff3333; margin: auto 20px"> * </span></label
           >
-            <select name="" id="" class="form-control">
-              <option value="" selected>اختر نسبة القيمة المضافة</option>
+            <select name="" v-model="added_value" id="" class="form-control">
+              <option value="" selected disabled hidden>اختر نسبة القيمة المضافة</option>
+              <option :value="value.id" v-for="value in added_values" :key="value.id"> {{ value.value}}</option>
+            </select>
+        </div>
+         <div class="form-group">
+          <label class="bold font14" for="exampleInputEmail1">
+            الدولة
+            <span style="color: #ff3333; margin: auto 20px"> * </span></label
+          >
+            <select name="" v-model="country_id" id="" class="form-control" @change="getCitiesFromID">
+              <option value="" selected disabled hidden>اختر الدولة</option>
+              <option :value="value.id" v-for="value in countries" :key="value.id"> {{ value.name}}</option>
             </select>
         </div>
 
@@ -433,7 +465,10 @@ export default {
       },
       address: '',
       loading: true,
-      cities : []
+      cities: [],
+      added_values: [],
+      added_value : null,
+      country_id : ''
 
     };
   },
@@ -472,6 +507,7 @@ export default {
     this.getcategories();
     this.geolocation();
     this.getCities();
+    this.getaddedvalues();
   },
 
   methods: {
@@ -522,10 +558,13 @@ export default {
         })
     },
     async getCities() {
-      await axios.get('cities')
+      await axios.get(`cities?country_id=${this.country_id}`)
         .then((res) => {
           this.cities = res.data.data
         })
+    },
+    getCitiesFromID() {
+      this.getCities()
     },
     async getcategories() {
       await axios.get('categories')
@@ -533,7 +572,12 @@ export default {
           this.categories = res.data.data
         })
     },
-
+    async getaddedvalues() {
+       await axios.get('added-values')
+        .then((res) => {
+          this.added_values = res.data.data
+        })
+    },
     async register() {
       console.log(this.selectedCategories)
       this.loading = false;
@@ -551,7 +595,8 @@ export default {
       fd.append('device_type', 'web')
       fd.append('device_id', 'test')
       fd.append('commercial_expired', moment(this.commercial_expired).format('YYYY-MM-DD'))
-      fd.append('added_value', 20)
+      fd.append('added_value', this.added_value)
+      fd.append('country_id', this.country_id)
       await axios.post('store/register-store', fd, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem('token')}`,

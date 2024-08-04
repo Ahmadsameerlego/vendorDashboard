@@ -87,6 +87,10 @@ export default {
           
             this.name_en = ''
             this.name_ar = ''
+
+            setTimeout(() => {
+              this.$router.push('/menus')
+            }, 2000);
           } else {
           this.$toast.add({ severity: 'error', summary: res.data.msg, life: 4000 });
           }

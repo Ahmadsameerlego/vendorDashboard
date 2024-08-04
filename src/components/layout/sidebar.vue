@@ -32,7 +32,7 @@
             </router-link>
           </li>
           <li class="side-button material-button p-1 round5 mt-1">
-            <router-link class="color-gray" to="/categories">
+            <router-link class="color-gray" to="/menus">
               <button class="dashboard-button color-gray">
                 <i class="fa fa-store"></i>
               </button>
@@ -79,8 +79,18 @@
                     <i class="fa fa-angle-left y180"></i>
                   </div>
                 </router-link>
-              </li>
-
+             </li>
+             <li class="side-drop-button p-1 round5 mt-1">
+                <router-link class="color-gray" to="/waiting-payment">
+                  <button class="color-gray">
+                    <i class="far fa-plus-square"></i>
+                  </button>
+                  <div class="side-button-content">
+                    <span class="font12 ml-2 mr-2">في انتظار الدفع</span>
+                    <i class="fa fa-angle-left y180"></i>
+                  </div>
+                </router-link>
+             </li>
               <li class="side-drop-button p-1 round5 mt-1">
                 <router-link class="color-gray" to="/activeOrders">
                   <button class="color-gray">
@@ -118,16 +128,78 @@
               </div>
             </router-link>
           </li>
-          <li class="side-button material-button p-1 round5 mt-0">
-            <router-link class="color-gray" to="/reservations">
+           <li class="side-button material-button p-1 round5 mt-1">
+            <a
+              onclick="oppenSideDropDown(this)"
+              class="color-gray drop-toggler d-block"
+              href="#"
+            >
               <button class="dashboard-button color-gray">
-                <i class="fa fa-money-bill"></i>
+                <i class="fa fa-clipboard-list"></i>
               </button>
               <div class="side-button-content">
                 <span class="font12 ml-2 mr-2">الحجوزات</span>
-                <i class="fa fa-angle-left y180"></i>
+                <i class="fa fa-angle-left arrow y180"></i>
               </div>
-            </router-link>
+            </a>
+            <ul class="side-dropdown">
+              <li class="side-drop-button p-1 round5 mt-1">
+                <router-link class="color-gray" to="/reservations">
+                  <button class="color-gray">
+                    <i class="far fa-plus-square"></i>
+                  </button>
+                  <div class="side-button-content">
+                    <span class="font12 ml-2 mr-2">الحجوزات الجديدية</span>
+                    <i class="fa fa-angle-left y180"></i>
+                  </div>
+                </router-link>
+             </li>
+             <li class="side-drop-button p-1 round5 mt-1">
+                <router-link class="color-gray" to="/accepted-reservations">
+                  <button class="color-gray">
+                    <i class="far fa-plus-square"></i>
+                  </button>
+                  <div class="side-button-content">
+                    <span class="font12 ml-2 mr-2">الحجوزات المقبولة</span>
+                    <i class="fa fa-angle-left y180"></i>
+                  </div>
+                </router-link>
+             </li>
+              <li class="side-drop-button p-1 round5 mt-1">
+                <router-link class="color-gray" to="/refused-reservations">
+                  <button class="color-gray">
+                    <i class="far fa-plus-square"></i>
+                  </button>
+                  <div class="side-button-content">
+                    <span class="font12 ml-2 mr-2">الحجوزات المرفوضة</span>
+                    <i class="fa fa-angle-left y180"></i>
+                  </div>
+                </router-link>
+              </li>
+
+              <li class="side-drop-button p-1 round5 mt-1">
+                <router-link class="color-gray" to="/canceled-reservations">
+                  <button class="color-gray">
+                    <i class="far fa-plus-square"></i>
+                  </button>
+                  <div class="side-button-content">
+                    <span class="font12 ml-2 mr-2">الحجوزات الملغاة</span>
+                    <i class="fa fa-angle-left y180"></i>
+                  </div>
+                </router-link>
+              </li>
+              <li class="side-drop-button p-1 round5 mt-1">
+                <router-link class="color-gray" to="/client-canceled-reservations">
+                  <button class="color-gray">
+                    <i class="far fa-plus-square"></i>
+                  </button>
+                  <div class="side-button-content">
+                    <span class="font12 ml-2 mr-2">الملغاة من المتجر</span>
+                    <i class="fa fa-angle-left y180"></i>
+                  </div>
+                </router-link>
+              </li>
+            </ul>
           </li>
 
           <li class="side-button material-button p-1 round5 mt-1">
